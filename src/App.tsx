@@ -1,9 +1,8 @@
 import React from 'react';
 import './App.css';
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
-// import Search from "./components/Search";
-// import films from "./components/Film";
 import Films from "./components/Film";
+import FilmList from "./components/FilmList";
 
 function App() {
   return (
@@ -12,6 +11,7 @@ function App() {
           <div>
 
             <Routes>
+                <Route path="/films-props" element={<FilmList/>}/>
                 <Route path="/films" element={<Films/>}/>
                  {/*<Route path="/search" element={<Search/>}/>*/}
 

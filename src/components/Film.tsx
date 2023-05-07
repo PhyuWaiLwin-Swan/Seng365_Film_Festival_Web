@@ -40,15 +40,6 @@ const Films = () => {
                 <td><Link to={"/films/" + film.filmId}>Go to
                     film</Link></td>
 
-                {/*<td>*/}
-
-                {/*    <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#deleteUserModal">*/}
-                {/*        Delete*/}
-                {/*    </button>*/}
-                {/*    <button type="button" className="btn btn-primary">Edit</button>*/}
-
-                {/*</td>*/}
-
             </tr>
         )
     }
