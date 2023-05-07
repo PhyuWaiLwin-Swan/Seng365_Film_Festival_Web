@@ -1,38 +1,44 @@
 import React from "react";
 import axios from "axios";
 import {Link} from "react-router-dom";
-const Films= () => {
+const Films = () => {
     const[films, setFilms] = React.useState < Array < Film >> ([])
     const [errorFlag, setErrorFlag] = React.useState(false)
     const [errorMessage, setErrorMessage] = React.useState("")
 
     React.useEffect(() => {
+        const getFilms = () => {
+            // console.log("Here")
+            axios.get("https://seng365.csse.canterbury.ac.nz/api/v1" + "/films" )
+
+                .then((response) => {
+                    setErrorFlag(false)
+                    setErrorMessage("film is not found")
+                    setFilms(response.data.films)
+                    // console.log(response.data)
+
+                }, (error) => {
+
+                    setErrorFlag(true)
+                    setErrorMessage(error.toString())
+                })}
         getFilms()
 
     }, [])
 
-    const getFilms = () => {
-        axios.get(process.env.REACT_DOMAIN + "/films" )
 
-            .then((response) => {
 
-                setErrorFlag(false)
-                setErrorMessage("")
-                setFilms(response.data)
-
-            }, (error) => {
-
-                setErrorFlag(true)
-                setErrorMessage(error.toString())
-            })}
-
-    const list_of_users = () => {
+    const list_of_films = () => {
+        console.log(films)
         return films.map((film: Film) =>
-            <tr key={film.film_id}>
-                <th scope="row">{film.film_title}</th>
-                <td>{film.film_description}</td>
-                <td><Link to={"/films/" + film.film_id}>Go to
-                    user</Link></td>
+            <tr key={film.filmId}>
+                <th scope="row">{film.filmId}</th>
+
+                <td>{film.title}</td>
+                <td>{film.rating}</td>
+                <td>{film.releaseDate}</td>
+                <td><Link to={"/films/" + film.filmId}>Go to
+                    film</Link></td>
 
                 {/*<td>*/}
 
@@ -47,6 +53,9 @@ const Films= () => {
         )
     }
 
+
+
+
     if(errorFlag) {
         return (
             <div>error</div>
@@ -54,7 +63,7 @@ const Films= () => {
     } else {
         return (
             <div>
-                <h1>Users</h1>
+                <h1>Films</h1>
                 <table className="table">
                     <thead>
 
@@ -69,7 +78,7 @@ const Films= () => {
 
                     </thead>
                     <tbody>
-                    {list_of_users()}
+                    {list_of_films()}
 
                     </tbody>
 

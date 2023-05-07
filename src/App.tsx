@@ -1,7 +1,9 @@
 import React from 'react';
 import './App.css';
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
-import Search from "./components/Search";
+// import Search from "./components/Search";
+// import films from "./components/Film";
+import Films from "./components/Film";
 
 function App() {
   return (
@@ -10,7 +12,8 @@ function App() {
           <div>
 
             <Routes>
-              <Route path="/search" element={<Search/>}/>
+                <Route path="/films" element={<Films/>}/>
+                 {/*<Route path="/search" element={<Search/>}/>*/}
 
             </Routes>
 
