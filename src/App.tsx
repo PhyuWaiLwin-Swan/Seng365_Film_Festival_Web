@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
-import Films from "./components/Film";
+import Films from "./components/Films";
 import FilmList from "./components/FilmList";
 
 function App() {
@@ -13,6 +13,7 @@ function App() {
             <Routes>
                 <Route path="/films-props" element={<FilmList/>}/>
                 <Route path="/films" element={<Films/>}/>
+                {/*<Route path="/films/:filmId" element={<Film/>} />*/}
                  {/*<Route path="/search" element={<Search/>}/>*/}
 
             </Routes>
