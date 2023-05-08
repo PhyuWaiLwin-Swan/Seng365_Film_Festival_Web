@@ -14,6 +14,8 @@ type Film = {
     rating : string,
     ageRating: string
 
+    description: string
+
 
 
 }

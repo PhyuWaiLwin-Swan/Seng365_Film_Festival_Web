@@ -24,7 +24,7 @@ const FilmListObject = (props: IFilmProps) => {
     <Card sx={{ maxWidth: 400 }} >
         <CardActionArea component="a" href={`/films/${film.filmId}`}>
             <CardMedia
-                src={`https://seng365.csse.canterbury.ac.nz/api/v1/films/${film.filmId}+/image` }
+                src={`https://seng365.csse.canterbury.ac.nz/api/v1/films/${film.filmId}/image` }
                 component="img"
                 height="140"
                 image= {film.image_filename}
@@ -60,6 +60,6 @@ const FilmListObject = (props: IFilmProps) => {
     </Card>
         </div>
 )
-
     }
+
 export default FilmListObject;

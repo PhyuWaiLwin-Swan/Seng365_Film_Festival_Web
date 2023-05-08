@@ -2,7 +2,7 @@ import React from "react";
 import axios from "axios";
 import {Link} from "react-router-dom";
 import FilmListObject from "./FilmListObject";
-const Film = () => {
+const Films = () => {
     const[film, setFilm] = React.useState <  Film > ()
     const [errorFlag, setErrorFlag] = React.useState(false)
     const [errorMessage, setErrorMessage] = React.useState("")
@@ -10,7 +10,7 @@ const Film = () => {
     React.useEffect(() => {
         const getFilm = () => {
             // console.log("Here")
-            axios.get("https://seng365.csse.canterbury.ac.nz/api/v1" + "/films/8" )
+            axios.get("https://seng365.csse.canterbury.ac.nz/api/v1" + "/films" )
 
                 .then((response) => {
                     setErrorFlag(false)
@@ -82,4 +82,4 @@ const Film = () => {
 
 }
 
-export default Film;
+export default Films;
