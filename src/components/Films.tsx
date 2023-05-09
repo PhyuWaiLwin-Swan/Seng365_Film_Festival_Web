@@ -1,11 +1,13 @@
 import React from "react";
 import axios from "axios";
-import {Link} from "react-router-dom";
+import {Link, useSearchParams} from "react-router-dom";
 import FilmListObject from "./FilmListObject";
 const Films = () => {
     const[film, setFilm] = React.useState <  Film > ()
     const [errorFlag, setErrorFlag] = React.useState(false)
     const [errorMessage, setErrorMessage] = React.useState("")
+    const [searchString, setSearchString] = useSearchParams();
+    const [searchState, setSearchState] = React.useState(false);
 
     React.useEffect(() => {
         const getFilm = () => {
@@ -24,8 +26,30 @@ const Films = () => {
                     setErrorMessage(error.toString())
                 })}
         getFilm()
-
+        searchString.get
     }, [])
+
+    // const handleChange = (e) => {
+    //     e.preventDefault();
+    //     setSearchInput(e.target.value);
+    // };
+    //
+    // if (searchInput.length > 0) {
+    //     countries.filter((country) => {
+    //         return country.name.match(searchInput);
+    //     });
+    // }
+    //
+
+
+
+
+
+
+
+
+
+
 
 
 
