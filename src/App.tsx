@@ -3,18 +3,21 @@ import './App.css';
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import Film from "./components/Film";
 import FilmList from "./components/FilmList";
+import ResponsiveAppBar from "./components/Header";
+import Login from "./components/Login";
+import Register from "./components/Register";
 
 function App() {
   return (
       <div className="App">
         <Router>
           <div>
-
+            <ResponsiveAppBar></ResponsiveAppBar>
             <Routes>
                 <Route path="/films" element={<FilmList/>}/>
                 <Route path="/films/:id" element={<Film/>}/>
-                {/*<Route path="/films/:filmId" element={<Film/>} />*/}
-                 {/*<Route path="/search" element={<Search/>}/>*/}
+                <Route path="/users/login" element={<Login/>}/>
+                <Route path="/users/register" element={<Register/>}/>
 
             </Routes>
 

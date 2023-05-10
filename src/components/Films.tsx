@@ -26,7 +26,6 @@ const Films = () => {
                     setErrorMessage(error.toString())
                 })}
         getFilm()
-        searchString.get
     }, [])
 
     // const handleChange = (e) => {

@@ -10,11 +10,13 @@ import {
     FormGroup,
     FormLabel,
     IconButton,
-    Switch,
+    Switch, TextField,
     ToggleButton, ToggleButtonGroup,
     Typography
 } from "@mui/material";
 import axios from "axios";
+import Container from "@mui/material/Container";
+import Button from "@mui/material/Button";
 
 
 const Search = () => {
@@ -23,7 +25,9 @@ const Search = () => {
     });
     const [searhString,setSearchString] = useSearchParams();
     const [showAgeForm, setShowAgeForm] = useState(false);
+    const [showGenreForm, setShowGenreForm] = useState(false);
     const [genre,setGenre] = useState<Array<Genre>>([]);
+
     const [ageStringState,setAgeStringState] = useState({
         G: false,
         PG: false,
@@ -33,6 +37,53 @@ const Search = () => {
         R18: false,
         TBC: false
     });
+    const genreList = genre.map(obj=>obj.name);
+
+
+    const GenreCheckboxes = () =>{
+        type CheckedGenres = {
+            [key: string]: boolean;
+        }
+        const [checkedGenres, setCheckedGenres] = useState<CheckedGenres>(
+            genreList.reduce((acc, curr) => ({ ...acc, [curr]: false }), {})
+        );
+
+        const handleCheckboxChange = (event: { target: { name: any; checked: any; }; }) => {
+            const { name, checked } = event.target;
+            setCheckedGenres({ ...checkedGenres, [name]: checked });
+        };
+
+        return (
+            <Container style={{display:"inline-grid"}}>
+                <ToggleButton
+                    value="check"
+                    selected={showGenreForm}
+                    onChange={(event,newState)=>handleToggle(showGenreForm,setShowGenreForm)}
+                >
+                    Genre
+                </ToggleButton>
+                {showGenreForm && (
+                    <FormControl sx={{m: 3}} component="fieldset" variant="standard">
+                        <FormLabel component="legend">Choose Genre</FormLabel>
+                        <FormGroup>
+                            {genre.map(obj => (
+                                <FormControlLabel
+                                    key={obj.name}
+                                    control={
+                                        <Checkbox
+                                            checked={checkedGenres[obj.name] || false}
+                                            onChange={handleCheckboxChange}
+                                            name={obj.name}
+                                        />
+                                    }
+                                    label={obj.name}
+                                />
+                            ))}
+                        </FormGroup>
+                    </FormControl>)}
+            </Container>
+        );
+    }
 
     React.useEffect(()=>{
         const getGenres = () => {
@@ -44,9 +95,6 @@ const Search = () => {
         }
         getGenres()
     },[setGenre])
-    // console.log(genre)
-    const genreList = Object.keys(genre).map((genre)=>{genreList[genre.name]});
-    console.log(genreList);
 
     const handleInputChangeForQ = (e: { target: { value: any; }; }) => {
         // @ts-ignore
@@ -63,15 +111,31 @@ const Search = () => {
         });
     };
     const searchQ = () => {
-        return (<div><input
-            type="text"
-            name="q"
-            placeholder="Search..."
-            value={query.q}
-            onChange={handleInputChangeForQ}
-        />
-            <button onClick={handleSearch}>Search</button></div>)
+        return (<div >
+            <TextField style={{height: "55px"}}
+                type="text"
+                name="q"
+                placeholder="Search..."
+                value={query.q}
+                onChange={handleInputChangeForQ}
+            />
+            <Button style={{height: "55px"}}
+                variant="contained"
+                onClick={handleSearch}>
+                Search
+            </Button></div>)
     }
+    const handleToggle = (state:any,setState: React.Dispatch<React.SetStateAction<any>>) => {
+        setState(!state);
+
+    }
+    const checkBoxForGenre = () => {
+
+        checkBoxForGenre()
+
+    }
+
+    // console.log(genre);
     const  checkBoxForAgeString = () => {
         const {G, PG, M, R13, R16, R18, TBC} = ageStringState
         const checkboxes = [
@@ -83,21 +147,19 @@ const Search = () => {
             { name: "R18", label: "R18", checked: R18 },
             { name: "TBC", label: "TBC", checked: TBC },
         ];
-        const handleToggle = () => {
-            setShowAgeForm(!showAgeForm);
-        };
+
         return (
-            <div>
+            <div style={{display:"inline-grid"}}>
                 <ToggleButton
                     value="check"
                     selected={showAgeForm}
-                    onChange={handleToggle}
+                    onChange={(event,newState)=>handleToggle(showAgeForm,setShowAgeForm)}
                 >
                     Age Rating
                 </ToggleButton>
                 {showAgeForm && (
             <FormControl sx={{m: 3}} component="fieldset" variant="standard">
-            <FormLabel component="legend">Assign responsibility</FormLabel>
+            <FormLabel component="legend">Choose Age Rating</FormLabel>
             <FormGroup>
                 {checkboxes.map((checkbox) => (
                     <FormControlLabel
@@ -135,10 +197,13 @@ const Search = () => {
     return (
         <div>
 
-            <div>{searchQ()}</div>
+            <Container>{searchQ()}</Container>
 
 
+            <div style={{display:"flex"}}>
             <div>{checkBoxForAgeString()}</div>
+            <div>{GenreCheckboxes()}</div>
+            </div>
         </div>
     );
 };

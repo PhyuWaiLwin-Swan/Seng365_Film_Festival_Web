@@ -1,0 +1,99 @@
+
+import React, { useState } from 'react';
+// import { makeStyles } from "@mui/material/styles";
+import {Card, TextField} from "@mui/material";
+import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
+
+// const useStyles = makeStyles((theme: { spacing: (arg0: number) => any; }) => ({
+//     root: {
+//         display: 'flex',
+//         flexDirection: 'column',
+//         justifyContent: 'center',
+//         alignItems: 'center',
+//         padding: theme.spacing(2),
+//
+//         '& .MuiTextField-root': {
+//             margin: theme.spacing(1),
+//             width: '300px',
+//         },
+//         '& .MuiButtonBase-root': {
+//             margin: theme.spacing(2),
+//         },
+//     },
+// }));
+
+const Register = () => {
+    // const Register = ({ handleClose }) => {
+    // const classes = useStyles();
+    // create state variables for each input
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    const handleSubmit = (e: { preventDefault: () => void; }) => {
+        e.preventDefault();
+        console.log(firstName, lastName, email, password);
+        // handleClose();
+    };
+
+    return (
+        <div>
+        <Container style={{ position: 'fixed', top: 0, bottom: 0, left: 0, right: 0, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <Card style={{ display:"inline-grid" , minWidth:"500px",minHeight:"400px", width:"500px", height:"550px"}} >
+                <h1>Register</h1>
+                <Container style={{ display:"inline-grid" , width:"400px", height:"600px"}} >
+        <form
+            // className={classes.root}
+            onSubmit={handleSubmit}>
+            <TextField
+                margin="normal"
+                fullWidth
+                label="First Name"
+                required
+                value={firstName}
+                onChange={(e: { target: { value: React.SetStateAction<string>; }; }) => setFirstName(e.target.value)}
+            />
+            <TextField
+                margin="normal"
+                fullWidth
+                label="Last Name"
+                required
+                value={lastName}
+                onChange={(e: { target: { value: React.SetStateAction<string>; }; }) => setLastName(e.target.value)}
+            />
+            <TextField
+                margin="normal"
+                fullWidth
+                label="Email"
+                type="email"
+                required
+                value={email}
+                onChange={(e: { target: { value: React.SetStateAction<string>; }; }) => setEmail(e.target.value)}
+            />
+            <TextField
+                margin="normal"
+                fullWidth
+                label="Password"
+                type="password"
+                required
+                value={password}
+                onChange={(e: { target: { value: React.SetStateAction<string>; }; }) => setPassword(e.target.value)}
+            />
+            <div>
+                {/*<Button variant="contained" onClick={handleClose}>*/}
+                {/*    Cancel*/}
+                {/*</Button>*/}
+                <Button style={{height: "55px"}} type="submit" variant="contained">Sign up</Button>
+
+            </div>
+        </form>
+                </Container>
+            </Card>
+        </Container>
+        </div>
+    );
+};
+
+export default Register;

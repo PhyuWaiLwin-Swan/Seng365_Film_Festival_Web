@@ -85,7 +85,7 @@ const FilmList = () => {
         );
     };
     return (
-        <div>
+        <div style={{padding:"20px"}}>
         <Search></Search>
         <div >
             <div style={{ display: 'flex', padding: "20px", flexWrap: 'wrap', gap: '10px' }}>
