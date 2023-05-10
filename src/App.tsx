@@ -11,7 +11,7 @@ function App() {
           <div>
 
             <Routes>
-                <Route path="/films-props" element={<FilmList/>}/>
+                <Route path="/films" element={<FilmList/>}/>
                 <Route path="/films/:id" element={<Film/>}/>
                 {/*<Route path="/films/:filmId" element={<Film/>} />*/}
                  {/*<Route path="/search" element={<Search/>}/>*/}

@@ -45,7 +45,8 @@ const Search = () => {
         getGenres()
     },[setGenre])
     console.log(genre)
-
+    const genreList = Object.keys(genre).map(Genre=>genre);
+    console.log(genreList);
 
     const handleInputChangeForQ = (e: { target: { value: any; }; }) => {
         // @ts-ignore
