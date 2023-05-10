@@ -12,7 +12,7 @@ type Film = {
     directorId : number,
     genreId : number,
     rating : string,
-    ageRating: string
+    ageRating: string,
 
     description: string
 
