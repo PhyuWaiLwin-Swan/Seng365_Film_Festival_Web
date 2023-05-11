@@ -1,6 +1,7 @@
 import React from "react";
 import CSS from "csstype";
 import {CardMedia, Container, TextField} from "@mui/material";
+import domain from "../domain";
 interface IFilmProps {
     film: Film
 
@@ -21,7 +22,7 @@ const FilmProfile = (props: IFilmProps, ) => {
         <Container style={{display: 'grid',verticalAlign: 'middle'}} >
 
             <CardMedia style={{padding:'20px'}}
-                src={`https://seng365.csse.canterbury.ac.nz/api/v1/films/${film.filmId}/image` }
+                src={domain+`/films/${film.filmId}/image` }
                 component="img"
                 height="400"
                 width="400"

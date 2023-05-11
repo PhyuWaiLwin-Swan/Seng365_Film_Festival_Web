@@ -14,6 +14,7 @@ import {
     Container
 } from "@mui/material";
 import FilmProfile from "./FilmProfile";
+import domain from "../domain";
 
 const EachFilm =() => {
     const {id} = useParams();
@@ -42,7 +43,7 @@ const EachFilm =() => {
     const [errorMessage, setErrorMessage] = React.useState("")
     React.useEffect(() => {
         const getOneFilm = () => {
-            axios.get("https://seng365.csse.canterbury.ac.nz/api/v1/films/"+id)
+            axios.get(domain+"/films/"+id)
             .then((response) => {
                 setErrorFlag(false)
                 setErrorMessage("")
@@ -59,7 +60,7 @@ const EachFilm =() => {
 
     React.useEffect(() => {
         const getReviews = () => {
-            axios.get("https://seng365.csse.canterbury.ac.nz/api/v1/films/"+id+"/reviews")
+            axios.get(domain+"/films/"+id+"/reviews")
                 .then((response) => {
                     setErrorFlag(false)
                     setErrorMessage("")
@@ -86,7 +87,7 @@ const EachFilm =() => {
             <TableCell align="center" valign="middle">
                 <CardMedia
                         component="img"
-                        src={`https://seng365.csse.canterbury.ac.nz/api/v1/users/${review.reviewerId}/image`}
+                        src={domain+`/users/${review.reviewerId}/image`}
                         alt=""
                         style={{ width: "30px", height: "30px", margin: 0, padding: 0}}
                     />

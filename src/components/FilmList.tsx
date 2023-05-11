@@ -4,6 +4,7 @@ import CSS from 'csstype';
 import {Paper, AlertTitle, Alert, Box,} from "@mui/material";
 import FilmListObject from "./FilmListObject";
 import Search from "./Search";
+import domain from "../domain";
 function chunkData(data: Film[]) {
     const chunkSize = 5; // number of items per row
     const chunks = [];
@@ -27,7 +28,7 @@ const FilmList = () => {
     React.useEffect(() => {
         const getFilms = () => {
             console.log(process.env.REACT_APP_DOMAIN)
-            axios.get("https://seng365.csse.canterbury.ac.nz/api/v1"  + "/films")
+            axios.get(domain  + "/films")
 
                 .then((response) => {
                     setErrorFlag(false)

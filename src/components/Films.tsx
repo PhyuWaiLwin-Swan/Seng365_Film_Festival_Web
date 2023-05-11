@@ -2,6 +2,7 @@ import React from "react";
 import axios from "axios";
 import {Link, useSearchParams} from "react-router-dom";
 import FilmListObject from "./FilmListObject";
+import domain from "../domain";
 const Films = () => {
     const[film, setFilm] = React.useState <  Film > ()
     const [errorFlag, setErrorFlag] = React.useState(false)
@@ -12,7 +13,7 @@ const Films = () => {
     React.useEffect(() => {
         const getFilm = () => {
             // console.log("Here")
-            axios.get("https://seng365.csse.canterbury.ac.nz/api/v1" + "/films" )
+            axios.get(domain+ "/films" )
 
                 .then((response) => {
                     setErrorFlag(false)

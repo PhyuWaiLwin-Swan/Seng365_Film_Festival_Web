@@ -1,6 +1,7 @@
 import React from "react";
 import {Alert, AlertTitle, Card, CardActionArea, CardContent, CardMedia, Paper, Typography} from "@mui/material";
 import CSS from "csstype";
+import domain from "../domain";
 interface IFilmProps {
     film: Film
 
@@ -24,7 +25,7 @@ const FilmListObject = (props: IFilmProps) => {
     <Card sx={{ maxWidth: 400 }} >
         <CardActionArea component="a" href={`/films/${film.filmId}`}>
             <CardMedia
-                src={`https://seng365.csse.canterbury.ac.nz/api/v1/films/${film.filmId}/image` }
+                src={domain+`/films/${film.filmId}/image` }
                 component="img"
                 height="140"
                 image= {film.image_filename}

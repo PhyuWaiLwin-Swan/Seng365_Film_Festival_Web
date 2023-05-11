@@ -17,6 +17,7 @@ import {
 import axios from "axios";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
+import domain from "../domain";
 
 
 const Search = () => {
@@ -87,7 +88,7 @@ const Search = () => {
 
     React.useEffect(()=>{
         const getGenres = () => {
-            axios.get("https://seng365.csse.canterbury.ac.nz/api/v1" + "/films/genres")
+            axios.get(domain+ "/films/genres")
                 .then((response) => {
                     setGenre(response.data)
                 })

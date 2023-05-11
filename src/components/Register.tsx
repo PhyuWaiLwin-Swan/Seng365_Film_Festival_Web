@@ -4,6 +4,10 @@ import React, { useState } from 'react';
 import {Card, TextField} from "@mui/material";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
+// import axios from "axios/index";
+import axios from "axios";
+import domain from "../domain";
+import {useNavigate} from "react-router-dom";
 
 // const useStyles = makeStyles((theme: { spacing: (arg0: number) => any; }) => ({
 //     root: {
@@ -27,14 +31,49 @@ const Register = () => {
     // const Register = ({ handleClose }) => {
     // const classes = useStyles();
     // create state variables for each input
+    const [user, setUser] = React.useState<User>({    userId: 0,
+        token:'',
+        firstName:'',
+        lastName:'',
+
+        email: '',
+
+        password:'',
+
+        currentPassword:'',
+        image_filename : '',
+    })
+    const navigate = useNavigate();
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [errorFlag, setErrorFlag] = React.useState(false)
+    const [errorMessage, setErrorMessage] = React.useState("")
 
     const handleSubmit = (e: { preventDefault: () => void; }) => {
         e.preventDefault();
-        console.log(firstName, lastName, email, password);
+
+        axios.post(domain  + "/users/register",
+
+            {"email": email,
+                "firstName": firstName,
+                "lastName": lastName,
+                "password": password,
+            })
+            .then((response) => {
+
+                setErrorFlag(false)
+                setErrorMessage("")
+                setUser(response.data)
+                navigate('/users/login')
+
+            }, (error) => {
+
+                setErrorFlag(true)
+                setErrorMessage(error.toString())
+            })
+        // console.log(firstName, lastName, email, password);
         // handleClose();
     };
 
