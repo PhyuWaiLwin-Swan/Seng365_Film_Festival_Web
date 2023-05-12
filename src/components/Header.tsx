@@ -49,8 +49,8 @@ function ResponsiveAppBar() {
 
     const handleCloseNavMenu = () => {
         setAnchorElNav(null);
-        window.location.href = "/films";
-        console.log(window.location.href)
+        localStorage.setItem("searchString","");
+        window.location.href = `/films`;
     };
 
     const handleCloseUserMenu = () => {
@@ -108,11 +108,11 @@ function ResponsiveAppBar() {
                                 display: { xs: 'block', md: 'none' },
                             }}
                         >
-                            {pages.map((page) => (
-                                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                                    <Typography textAlign="center">{page}</Typography>
-                                </MenuItem>
-                            ))}
+
+                            <MenuItem key="filmButton" onClick={handleCloseNavMenu}>
+                                <Typography textAlign="center">Films</Typography>
+                            </MenuItem>
+
                         </Menu>
                     </Box>
                     <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />

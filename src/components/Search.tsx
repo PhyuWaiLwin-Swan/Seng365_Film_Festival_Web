@@ -49,7 +49,10 @@ const Search = () => {
     });
 
     const handleSearch = () => {
-        let queryParams = query.q;
+        let queryParams ="";
+        if (query.q != "") {
+            queryParams = "q="+query.q;
+        }
         Object.keys(ageStringState).forEach((key) => {
             if (ageStringState[key as keyof typeof ageStringState]) {
                 queryParams += "&ageRatings=" + key;
@@ -68,13 +71,19 @@ const Search = () => {
             {queryParams= queryParams.substring(1,)}
             queryParams="?"+queryParams
         }
+        localStorage.setItem("searchString", queryParams)
         window.location.href = `/films${queryParams}`;
         // setQueryParams(queryParams)
         // return queryParams
-        localStorage.setItem("searchString", queryParams)
+
 
 
     };
+
+    const handleReset = () => {
+        localStorage.setItem("searchString","");
+        window.location.href = `/films`;
+    }
 
     const GenreCheckboxes = () =>{
         const handleCheckboxChange = (event: { target: { name: any; checked: any; }; }) => {
@@ -140,19 +149,27 @@ const Search = () => {
         });
     };
     const searchQ = () => {
-        return (<div >
-            <TextField style={{height: "55px"}}
+        return (<div style={{display: "inline-flex"}}>
+            <TextField style={{height: "55px",width:"300px"}}
                 type="text"
                 name="q"
                 placeholder="Search..."
                 value={query.q}
                 onChange={handleInputChangeForQ}
             />
-            <Button style={{height: "55px"}}
+            <Button style={{height: "55px",width:"85px",paddingLeft:"10px", paddingRight:"10px"}}
                 variant="contained"
                 onClick={handleSearch}>
                 Search
-            </Button></div>)
+            </Button>
+            <Button style={{height: "55px",width:"85px",paddingLeft:"10px", paddingRight:"10px"}}
+                    variant="contained"
+                    onClick={handleReset}>
+                Reset
+            </Button>
+
+
+        </div>)
     }
     const handleToggle = (state:any,setState: React.Dispatch<React.SetStateAction<any>>) => {
         setState(!state);

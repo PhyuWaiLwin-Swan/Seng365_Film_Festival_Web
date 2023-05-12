@@ -8,26 +8,29 @@ import FilmProfile from "./FilmProfile";
 
 const User = () => {
     const navigate = useNavigate();
-    const [user, setUser] = React.useState<User>({    userId: 0, token:"",
-        firstName:'',
-        lastName:'',
+    const [user, setUser] = React.useState<User>({
+        userId: 0, token: "",
+        firstName: '',
+        lastName: '',
 
         email: '',
 
-        password:'',
+        password: '',
 
-        currentPassword:'',
-        image_filename : '',
+        currentPassword: '',
+        image_filename: '',
     })
     const userId = localStorage.getItem("userId")
     const token = localStorage.getItem("token")
-    React.useEffect(() => {loadUser()})
+    React.useEffect(() => {
+        loadUser()
+    })
     // const [user, setUser] = React.useState < Array < User >> ([])
     const [errorFlag, setErrorFlag] = React.useState(false)
     const [errorMessage, setErrorMessage] = React.useState("")
 
     const deleteUser = (user: User) => {
-        axios.delete(domain+'/users/' + user.userId)
+        axios.delete(domain + '/users/' + user.userId)
 
             .then((response) => {
 
@@ -75,151 +78,119 @@ const User = () => {
 
     }
     const UserObject = () => {
-        return (<div style={{padding:"10px"}}>
-            <Card sx={{ maxWidth: 400 }} >
+        return (<div style={{padding: "10px"}}>
+            <Card sx={{maxWidth: 400}}>
 
-                    <CardMedia
-                        src={domain+`/films/${user.image_filename}/image` }
-                        component="img"
-                        height="140"
-                        image= {user.image_filename}
-                        alt=""
-                    />
-                    <CardContent>
-                        <Typography gutterBottom variant="h6" component="div">
-                            Email : {user.email}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                            Full Name : {user.firstName} {user.lastName}
-                        </Typography>
-                    </CardContent>
+                <CardMedia
+                    src={domain + `/films/${user.image_filename}/image`}
+                    component="img"
+                    height="140"
+                    image={user.image_filename}
+                    alt=""
+                />
+                <CardContent>
+                    <Typography gutterBottom variant="h6" component="div">
+                        Email : {user.email}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                        Full Name : {user.firstName} {user.lastName}
+                    </Typography>
+                </CardContent>
             </Card>
         </div>)
     }
-    // if (errorFlag) {
-    //     return (
-    //         <div>
-    //
-    //             <h1>Users</h1>
-    //             <div style={{ color: "red" }}>
-    //                 {errorMessage}
-    //
-    //             </div>
-    //
-    //         </div>
-    //
-    //     )
-    // } else {
-    //     return (
-    //
-    //         <div>
-    //
-    //             <h1>Users</h1>
-    //             <table className="table">
-    //                 <thead>
-    //
-    //                 <tr>
-    //
-    //                     <th scope="col">#</th>
-    //                     <th scope="col">username</th>
-    //                     <th scope="col">link</th>
-    //                     <th scope="col">actions</th>
-    //
-    //                 </tr>
-    //
-    //                 </thead>
-    //                 <tbody>
-    //                 {UserObject()}
-    //
-    //                 </tbody>
-    //
-    //             </table>
-    //
-    //             <div className="modal fade" id="deleteUserModal" tabIndex={-1} role="dialog"
-    //                  aria-labelledby="deleteUserModalLabel" aria-hidden="true">
-    //                 <div className="modal-dialog" role="document">
-    //                     <div className="modal-content">
-    //
-    //                         <div className="modal-header">
-    //
-    //                             <h5 className="modal-title" id="deleteUserModalLabel">Delete User</h5>
-    //                             <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-    //                                 <span aria-hidden="true">&times;</span>
-    //
-    //                             </button>
-    //                         </div>
-    //                         <div className="modal-body">
-    //                             Are you sure that you want to delete this user?
-    //
-    //                         </div>
-    //                         <div className="modal-footer">
-    //                             <button type="button" className="btn btn-secondary" data-dismiss="modal">
-    //
-    //                                 Close
-    //                             </button>
-    //                             <button type="button" className="btn btn-primary" data-dismiss="modal"
-    //                                     onClick={() => deleteUser(user)}>
-    //
-    //                                 Delete User
-    //
-    //                             </button>
-    //
-    //                         </div>
-    //
-    //                     </div>
-    //                 </div>
-    //             </div>
-    //             <div className="modal fade" id="deleteUserModal" tabIndex={-1} role="dialog"
-    //                  aria-labelledby="deleteUserModalLabel" aria-hidden="true">
-    //                 <div className="modal-dialog" role="document">
-    //                     <div className="modal-content">
-    //                         <div className="modal-header">
-    //
-    //                             <h5 className="modal-title" id="deleteUserModalLabel">Delete User</h5>
-    //                             <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-    //                                 <span aria-hidden="true">&times;</span>
-    //
-    //                             </button>
-    //
-    //                         </div>
-    //                         <div className="modal-body">
-    //                             Are you sure that you want to delete this user?
-    //
-    //                         </div>
-    //                         <div className="modal-footer">
-    //                             <button type="button" className="btn btn-secondary" data-dismiss="modal">
-    //
-    //                                 Close
-    //                             </button>
-    //                             <button type="button" className="btn btn-primary" data-dismiss="modal"
-    //                                     onClick={() => deleteUser(user)}>
-    //
-    //                                 Delete User
-    //
-    //                             </button>
-    //
-    //                         </div>
-    //
-    //                     </div>
-    //
-    //                 </div>
-    //
-    //             </div>
-    //
-    //         </div>
-    //
-    //     )
-    //
-    // }
 
-    return (<Container style={{display: 'inline-block', padding: "10px",verticalAlign: 'middle'}} >
-        <div style={{display: 'inline-block', padding: "10px"}}>
-            {UserObject()}
-        </div>
-        </Container>
-    )
+
+    if (errorFlag) {
+        return (
+            <div>
+
+                <h1>Users</h1>
+                <div style={{color: "red"}}>
+                    {errorMessage}
+
+                </div>
+
+            </div>
+
+        )
+    } else {
+        //     return (
+        //
+        //         <div>
+        //
+        //             <h1>Users</h1>
+        //             <table className="table">
+        //                 <thead>
+        //
+        //                 <tr>
+        //
+        //                     <th scope="col">#</th>
+        //                     <th scope="col">username</th>
+        //                     <th scope="col">link</th>
+        //                     <th scope="col">actions</th>
+        //
+        //                 </tr>
+        //
+        //                 </thead>
+        //                 <tbody>
+        //                 {UserObject()}
+        //
+        //                 </tbody>
+        //
+        //             </table>
+        //
+        //             <div className="modal fade" id="deleteUserModal" tabIndex={-1} role="dialog"
+        //                  aria-labelledby="deleteUserModalLabel" aria-hidden="true">
+        //                 <div className="modal-dialog" role="document">
+        //                     <div className="modal-content">
+        //                         <div className="modal-header">
+        //
+        //                             <h5 className="modal-title" id="deleteUserModalLabel">Delete User</h5>
+        //                             <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+        //                                 <span aria-hidden="true">&times;</span>
+        //
+        //                             </button>
+        //
+        //                         </div>
+        //                         <div className="modal-body">
+        //                             Are you sure that you want to delete this user?
+        //
+        //                         </div>
+        //                         <div className="modal-footer">
+        //                             <button type="button" className="btn btn-secondary" data-dismiss="modal">
+        //
+        //                                 Close
+        //                             </button>
+        //                             <button type="button" className="btn btn-primary" data-dismiss="modal"
+        //                                     onClick={() => deleteUser(user)}>
+        //
+        //                                 Delete User
+        //
+        //                             </button>
+        //
+        //                         </div>
+        //
+        //                     </div>
+        //
+        //                 </div>
+        //
+        //             </div>
+        //
+        //         </div>
+        //
+        //     )
+        //
+        // }
+
+        return (<Container style={{display: 'inline-block', padding: "10px", verticalAlign: 'middle'}}>
+                <div style={{display: 'inline-block', padding: "10px"}}>
+                    {UserObject()}
+                </div>
+            </Container>
+        )
+    }
 }
-
 
 
 export default User;

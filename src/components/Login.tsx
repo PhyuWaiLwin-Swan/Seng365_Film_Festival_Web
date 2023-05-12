@@ -29,10 +29,8 @@ const Login = () => {
         )
             .then((response) => {
 
-                console.log(response.status)
                 setErrorFlag(false)
                 setErrorMessage("")
-                console.log(response.data.userId)
                 localStorage.setItem("token",response.data.token )
                 localStorage.setItem("userId",response.data.userId )
                 navigate("/users/"+response.data.userId)

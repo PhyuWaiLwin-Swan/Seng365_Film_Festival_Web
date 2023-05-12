@@ -29,7 +29,14 @@ const FilmList = (props: any) => {
 
     React.useEffect(() => {
         const getFilms = () => {
-            axios.get(domain  + "/films"+localStorage.getItem("searchString"))
+            // console.log(localStorage.getItem("searchString").toString())
+            let requestLink ;
+            if(localStorage.getItem("searchString")!= null){
+                requestLink = domain  + "/films"+localStorage.getItem("searchString")
+            } else {
+                requestLink =  domain  + "/films";
+            }
+            axios.get(requestLink)
 
                 .then((response) => {
                     setErrorFlag(false)

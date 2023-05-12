@@ -19,11 +19,6 @@ import React, {useState} from "react";
          currentPassword:"",
 
      })
-     // const [userFirstname, setuserFirstname] = React.useState("")
-     // const [userLastname, setuserLastname] = React.useState("")
-     // const [ email, setEmail] = React.useState("")
-     // const [password, setPassword] = React.useState("")
-     // const [currentPasswork, currentPassword]= React.useState("")
 
      const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false)
      const [openEditDialog, setOpenEditDialog] = React.useState(false)

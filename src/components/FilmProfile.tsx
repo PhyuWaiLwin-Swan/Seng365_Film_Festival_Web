@@ -6,7 +6,7 @@ interface IFilmProps {
     film: Film
 
 }
-const FilmProfile = (props: IFilmProps, ) => {
+const FilmProfile = (props: IFilmProps ) => {
     const [film] = React.useState < Film > (props.film)
 
     const card: CSS.Properties = {

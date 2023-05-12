@@ -1,7 +1,20 @@
 import React from "react";
-import {Alert, AlertTitle, Card, CardActionArea, CardContent, CardMedia, Paper, Typography} from "@mui/material";
+import {
+    Alert,
+    AlertTitle,
+    Card,
+    CardActionArea,
+    CardContent,
+    CardMedia, Dialog, DialogActions, DialogContent, DialogContentText,
+    DialogTitle,
+    Paper,
+    Typography
+} from "@mui/material";
 import CSS from "csstype";
 import domain from "../domain";
+import {useFilmStore} from "../store/useFilmStore";
+import axios from "axios";
+import Button from "@mui/material/Button";
 interface IFilmProps {
     film: Film
 
@@ -19,46 +32,55 @@ const FilmListObject = (props: IFilmProps) => {
         marginBottom: "20px",
         marginTop: "20px",
     }
+
+
     return (
 
         <div style={{padding:"10px"}}>
-    <Card sx={{ maxWidth: 400 }} >
-        <CardActionArea component="a" href={`/films/${film.filmId}`}>
-            <CardMedia
-                src={domain+`/films/${film.filmId}/image` }
-                component="img"
-                height="140"
-                image= {film.image_filename}
-                alt=""
-            />
-            <CardContent>
-                <Typography gutterBottom variant="h6" component="div">
-                    Title : {film.title}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                    Director Full Name : {film.directorFirstName} {film.directorLastName}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                    Age rating : {film.ageRating}
+            <Card sx={{ maxWidth: 400 }} >
+                <CardActionArea component="a" href={`/films/${film.filmId}`}>
+                    <CardMedia
+                        src={domain+`/films/${film.filmId}/image` }
+                        component="img"
+                        height="140"
+                        image= {film.image_filename}
+                        alt=""
+                    />
+                    <CardContent>
+                        <Typography gutterBottom variant="h6" component="div">
+                            Title : {film.title}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                            Director Full Name : {film.directorFirstName} {film.directorLastName}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                            Age rating : {film.ageRating}
 
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                    Release Date : {film.releaseDate}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                            Release Date : {film.releaseDate}
 
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                    Genre : {film.genreId}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                            Genre : {film.genreId}
 
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                    Rating : {film.rating}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                            Rating : {film.rating}
 
-                </Typography>
+                        </Typography>
+
+                        {/*<Button style={{height: "55px",width:"85px",paddingLeft:"10px", paddingRight:"10px"}}*/}
+                        {/*        variant="contained"*/}
+                        {/*        onClick={}>*/}
+                        {/*    Edit*/}
+                        {/*</Button>*/}
+
+                    </CardContent>
+                </CardActionArea>
 
 
-            </CardContent>
-        </CardActionArea>
-    </Card>
+            </Card>
         </div>
 )
     }

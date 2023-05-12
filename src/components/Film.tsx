@@ -11,10 +11,12 @@ import {
     TableRow,
     TableHead,
     TableBody,
-    Container
+    Container, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions
 } from "@mui/material";
 import FilmProfile from "./FilmProfile";
 import domain from "../domain";
+import {useFilmStore} from "../store/useFilmStore";
+import Button from "@mui/material/Button";
 
 const EachFilm =() => {
     const {id} = useParams();
@@ -37,10 +39,14 @@ const EachFilm =() => {
         rating : "",
         ageRating: ""}
         )
-
     const[reviews, setReviews] = React.useState<Array<Review>>([])
     const [errorFlag, setErrorFlag] = React.useState(false)
     const [errorMessage, setErrorMessage] = React.useState("")
+    const token = localStorage.getItem("token")
+    const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false)
+    const [openEditDialog, setOpenEditDialog] = React.useState(false)
+    const deleteFilmFromStore = useFilmStore(state => state.removeFilm)
+    const editFilmFromStore = useFilmStore(state=>state.editFilm)
     React.useEffect(() => {
         const getOneFilm = () => {
             axios.get(domain+"/films/"+id)
@@ -75,7 +81,101 @@ const EachFilm =() => {
         getReviews()
     }, [id])
 
+    const handleDeleteDialogClose = () => {
+        setOpenDeleteDialog(false);
+    };
+    const handleDeleteDialogOpen = () => {
+        setOpenDeleteDialog(true);
+    };
+    const handleEditDialogClose = () => {
+        setOpenEditDialog(false);
+    };
+    const handleEditDialogOpen = () => {
+        setOpenEditDialog(true);
+    };
+    const deleteFilm = () => {
+        axios.delete(domain + '/films/' + oneFilm.filmId,
 
+            {
+                headers: {
+                    'X-Authorization': token
+                }
+            }
+
+        )
+
+            .then((response) => {
+
+                // navigate('/users')
+
+            }, (error) => {
+
+                setErrorFlag(true)
+                setErrorMessage(error.toString())
+            })
+    }
+
+    const editFilm =() => {
+        axios.patch(domain + '/films/' + oneFilm.filmId,{
+            headers: {
+                'X-Authorization': token
+            },
+            data: {
+                oneFilm
+            }
+        })
+    }
+
+
+    const DeleteDialog = (header:string, body:string) => {
+
+        return (<Dialog
+            open={openDeleteDialog}
+            onClose={handleDeleteDialogClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+        >
+            <DialogTitle id="alert-dialog-title">
+                {header}
+            </DialogTitle>
+            <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                    {body}
+                </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={handleDeleteDialogClose}>Disagree</Button>
+                <Button onClick={deleteFilm} autoFocus>
+                    Agree
+                </Button>
+            </DialogActions>
+        </Dialog>)
+    }
+
+    const EditDialog = (header:string, body:string) => {
+
+        return (<Dialog
+            open={openEditDialog}
+            onClose={handleEditDialogClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+        >
+            <DialogTitle id="alert-dialog-title">
+                {header}
+            </DialogTitle>
+            <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                    {body}
+                </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={handleEditDialogClose}>Disagree</Button>
+                <Button onClick={editFilm} autoFocus>
+                    Agree
+                </Button>
+            </DialogActions>
+        </Dialog>)
+    }
 
     const list_of_review = () => {
         console.log(reviews)
@@ -106,6 +206,15 @@ const EachFilm =() => {
             <div style={{display: 'inline-block', padding: "10px"}}>
                 <FilmProfile key={oneFilm.filmId + oneFilm.title} film={oneFilm}/>
             </div>
+
+            <div>
+                <Button style={{height: "55px",width:"85px",paddingLeft:"10px", paddingRight:"10px"}}
+                        variant="contained"
+                        onClick={handleDeleteDialogOpen}>
+                    Delete
+                </Button>
+                <div>{DeleteDialog("Delete Film", "Are you sure that you want to delete a film?")}</div>
+            </div>
             <div style={{display: 'inline-block', padding: "10px"}}>
                 <TableContainer component={Paper}>
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -117,6 +226,7 @@ const EachFilm =() => {
                                 <TableCell align="right">Reviewer Last Name</TableCell>
                                 <TableCell align="right">Rating</TableCell>
                                 <TableCell align="right">Review</TableCell>
+
                             </TableRow>
                         </TableHead>
                         <TableBody>

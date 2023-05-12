@@ -44,9 +44,9 @@ import create from 'zustand';
      setLocalStorage('users', users)
      return {users: users}
      }),
-     editUser: (user: User, userInfo) => set((state) => {
+     editUser: (user: User, newUserName) => set((state) => {
      const temp = state.users.map(u => u.userId === user.userId ?
-         ({...u, username: userInfo} as User): u)
+         ({...u, username: newUserName} as User): u)
      setLocalStorage('users', temp)
      return {users: temp}
      }),
