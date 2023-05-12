@@ -18,17 +18,18 @@ function chunkData(data: Film[]) {
 
 const FilmsPerPage = 10;
 
-const FilmList = () => {
+const FilmList = (props: any) => {
     const [films, setFilms] = React.useState <Array<Film>>([])
     const [currentPage, setCurrentPage] = React.useState(1);
     const [errorFlag, setErrorFlag] = React.useState(false)
     const [errorMessage, setErrorMessage] = React.useState("")
     const filmChunk = chunkData(films)
+    // console.log(props.query.queryString)
+
 
     React.useEffect(() => {
         const getFilms = () => {
-            console.log(process.env.REACT_APP_DOMAIN)
-            axios.get(domain  + "/films")
+            axios.get(domain  + "/films"+localStorage.getItem("searchString"))
 
                 .then((response) => {
                     setErrorFlag(false)

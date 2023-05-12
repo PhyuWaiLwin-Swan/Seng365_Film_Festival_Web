@@ -13,6 +13,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import {Link} from "@mui/material";
+import {useNavigate} from "react-router-dom";
 
 const pages = ['Film'];
 const settings = ['Profile','Logout'];
@@ -22,12 +23,29 @@ function ResponsiveAppBar() {
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
     const userId = localStorage.getItem("userId")
     const token = localStorage.getItem("token")
+    const navigate = useNavigate();
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget);
     };
     const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElUser(event.currentTarget);
     };
+
+    const handleLoadUser = () => {
+        navigate("/users/"+userId)
+    }
+
+    const handleLoadLoginPage = () => {
+        navigate("/users/login")
+    }
+    const handleLoadOut = () => {
+        localStorage.clear()
+        navigate("/films/")
+    }
+
+    const handleLoadRegisterPage = () => {
+        navigate("/users/register")
+    }
 
     const handleCloseNavMenu = () => {
         setAnchorElNav(null);
@@ -151,14 +169,34 @@ function ResponsiveAppBar() {
                             onClose={handleCloseUserMenu}
                         >
 
+                            {token !== null &&
 
-                                <MenuItem key="profilePage"onClick={handleCloseUserMenu}>
+
+                                <><MenuItem key="userPageItem" onClick={()=>{handleCloseUserMenu(); handleLoadUser();}}>
                                     {/*<Link to="/profile">*/}
                                     <Typography textAlign="center">Profile</Typography>
                                 </MenuItem>
-                            <MenuItem key="logOut"onClick={handleCloseUserMenu}>
-                                <Typography textAlign="center">Log out</Typography>
-                            </MenuItem>
+                                    <MenuItem key="logOutItem" onClick={()=>{handleCloseUserMenu(); handleLoadOut();}}>
+                                    <Typography textAlign="center">Log out</Typography>
+                                </MenuItem></>
+                            }
+                            {token == null &&
+                                <>
+                                    <MenuItem key="loginItem" onClick={() => {
+                                        handleCloseUserMenu();
+                                        handleLoadLoginPage();
+                                    }}>
+                                        {/*<Link to="/profile">*/}
+                                        <Typography textAlign="center">Log in</Typography>
+                                    </MenuItem>
+                                    <MenuItem key="registerItem" onClick={() => {
+                                        handleCloseUserMenu();
+                                        handleLoadRegisterPage();
+                                    }}>
+                                        {/*<Link to="/profile">*/}
+                                        <Typography textAlign="center">Register</Typography>
+                                </MenuItem></>
+                            }
                         </Menu>
                     </Box>
                 </Toolbar>

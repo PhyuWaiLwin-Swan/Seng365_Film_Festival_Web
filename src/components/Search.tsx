@@ -18,6 +18,8 @@ import axios from "axios";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import domain from "../domain";
+import {forEach} from "react-bootstrap/ElementChildren";
+import FilmList from "./FilmList";
 
 
 const Search = () => {
@@ -26,9 +28,16 @@ const Search = () => {
     });
     const [searhString,setSearchString] = useSearchParams();
     const [showAgeForm, setShowAgeForm] = useState(false);
+
     const [showGenreForm, setShowGenreForm] = useState(false);
     const [genre,setGenre] = useState<Array<Genre>>([]);
-
+    const genreList = genre.map(obj=>obj.name);
+    type CheckedGenres = {
+        [key: string]: boolean;
+    }
+    const [checkedGenres, setCheckedGenres] = useState<CheckedGenres>(
+        genreList.reduce((acc, curr) => ({ ...acc, [curr]: false }), {})
+    );
     const [ageStringState,setAgeStringState] = useState({
         G: false,
         PG: false,
@@ -38,17 +47,36 @@ const Search = () => {
         R18: false,
         TBC: false
     });
-    const genreList = genre.map(obj=>obj.name);
 
+    const handleSearch = () => {
+        let queryParams = query.q;
+        Object.keys(ageStringState).forEach((key) => {
+            if (ageStringState[key as keyof typeof ageStringState]) {
+                queryParams += "&ageRatings=" + key;
+            }
+        });
+        Object.keys(checkedGenres).forEach((key) => {
+            if (checkedGenres[key as keyof typeof checkedGenres]) {
+                const genreId = genre.find((g) => g.name === key)?.genreId;
+                if (genreId) {
+                    queryParams += "&genreIds=" + genreId;
+                }
+            }
+        });
+        if (queryParams!== ""){
+            if (queryParams.startsWith("&"))
+            {queryParams= queryParams.substring(1,)}
+            queryParams="?"+queryParams
+        }
+        window.location.href = `/films${queryParams}`;
+        // setQueryParams(queryParams)
+        // return queryParams
+        localStorage.setItem("searchString", queryParams)
+
+
+    };
 
     const GenreCheckboxes = () =>{
-        type CheckedGenres = {
-            [key: string]: boolean;
-        }
-        const [checkedGenres, setCheckedGenres] = useState<CheckedGenres>(
-            genreList.reduce((acc, curr) => ({ ...acc, [curr]: false }), {})
-        );
-
         const handleCheckboxChange = (event: { target: { name: any; checked: any; }; }) => {
             const { name, checked } = event.target;
             setCheckedGenres({ ...checkedGenres, [name]: checked });
@@ -135,8 +163,6 @@ const Search = () => {
         checkBoxForGenre()
 
     }
-
-    // console.log(genre);
     const  checkBoxForAgeString = () => {
         const {G, PG, M, R13, R16, R18, TBC} = ageStringState
         const checkboxes = [
@@ -179,20 +205,6 @@ const Search = () => {
             </div>)
     }
 
-    const handleSearch = () => {
-        const queryParams = Object.entries(query)
-            .map(([key, value]) => {
-                if (Array.isArray(value)) {
-                    // if the value is an array, we join its values with a comma
-                    return `${key}=${value.join(",")}`;
-                } else {
-                    return `${key}=${value}`;
-                }
-            })
-            .join("&");
-        window.location.href = `/films?${queryParams}`;
-        // Make API request using the apiUrl...
-    };
 
 
     return (
