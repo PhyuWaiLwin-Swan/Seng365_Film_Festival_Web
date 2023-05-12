@@ -54,15 +54,15 @@ const Register = () => {
     const handleSubmit = (e: { preventDefault: () => void; }) => {
         e.preventDefault();
 
-        axios.post(domain  + "/users/register",
+        axios.post(domain  + "/users/register", {
+                    "firstName": firstName,
+                    "lastName": lastName,
+                    "email": email,
+                    "password": password,
+                }
 
-            {"email": email,
-                "firstName": firstName,
-                "lastName": lastName,
-                "password": password,
-            })
+            )
             .then((response) => {
-
                 setErrorFlag(false)
                 setErrorMessage("")
                 setUser(response.data)
@@ -73,6 +73,7 @@ const Register = () => {
                 setErrorFlag(true)
                 setErrorMessage(error.toString())
             })
+        console.log(user.userId)
         // console.log(firstName, lastName, email, password);
         // handleClose();
     };

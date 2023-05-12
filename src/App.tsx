@@ -19,7 +19,7 @@ function App() {
                 <Route path="/films/:id" element={<Film/>}/>
                 <Route path="/users/login" element={<Login/>}/>
                 <Route path="/users/register" element={<Register/>}/>
-                {/*<Route path="/Users/:id" element={<User/>}/>*/}
+                <Route path="/Users/:id" element={<User/>}/>
 
             </Routes>
 

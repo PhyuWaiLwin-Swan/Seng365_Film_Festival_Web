@@ -12,14 +12,16 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
+import {Link} from "@mui/material";
 
 const pages = ['Film'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const settings = ['Profile','Logout'];
 
 function ResponsiveAppBar() {
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-
+    const userId = localStorage.getItem("userId")
+    const token = localStorage.getItem("token")
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget);
     };
@@ -148,11 +150,15 @@ function ResponsiveAppBar() {
                             open={Boolean(anchorElUser)}
                             onClose={handleCloseUserMenu}
                         >
-                            {settings.map((setting) => (
-                                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                    <Typography textAlign="center">{setting}</Typography>
+
+
+                                <MenuItem key="profilePage"onClick={handleCloseUserMenu}>
+                                    {/*<Link to="/profile">*/}
+                                    <Typography textAlign="center">Profile</Typography>
                                 </MenuItem>
-                            ))}
+                            <MenuItem key="logOut"onClick={handleCloseUserMenu}>
+                                <Typography textAlign="center">Log out</Typography>
+                            </MenuItem>
                         </Menu>
                     </Box>
                 </Toolbar>

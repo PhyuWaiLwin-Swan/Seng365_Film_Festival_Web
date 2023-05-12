@@ -1,12 +1,14 @@
 import React from "react";
-import {Cabin} from "@mui/icons-material";
+import {Cabin, Delete, Edit} from "@mui/icons-material";
 import Container from "@mui/material/Container";
-import {Card, Paper, TextField} from "@mui/material";
+import {Card, CardActions, CardContent, CardMedia, IconButton, Paper, TextField, Typography} from "@mui/material";
 import Button from "@mui/material/Button";
 import axios from "axios";
 import domain from "../domain";
 import {useNavigate} from "react-router-dom";
 import User from "./User";
+import CSS from "csstype";
+
 
 
 const Login = () => {
@@ -16,41 +18,35 @@ const Login = () => {
     const [password,setPassword] = React.useState("");
     const [errorFlag, setErrorFlag] = React.useState(false)
     const [errorMessage, setErrorMessage] = React.useState("")
-    const [user, setUser] = React.useState<User>({    userId: 0,
-        token:'',
-        firstName:'',
-        lastName:'',
 
-        email: '',
-
-        password:'',
-
-        currentPassword:'',
-        image_filename : '',
-    })
     const handleSubmit = (e: { preventDefault: () => void; }) => {
         e.preventDefault();
-
-        axios.post(domain  + "/users/login",
-
-            {"email": email,
-                "password": password,
-            })
+        // e.preventDefault();
+        axios.post(domain  + "/users/login", {
+                "email": email,
+                "password": password
+            }
+        )
             .then((response) => {
 
+                console.log(response.status)
                 setErrorFlag(false)
                 setErrorMessage("")
-                setUser(response.data)
-                User(user);
+                console.log(response.data.userId)
+                localStorage.setItem("token",response.data.token )
+                localStorage.setItem("userId",response.data.userId )
+                navigate("/users/"+response.data.userId)
 
             }, (error) => {
 
                 setErrorFlag(true)
                 setErrorMessage(error.toString())
             })
-        // console.log(firstName, lastName, email, password);
-        // handleClose();
+
+
+
     };
+
     const LoginPage = () =>{
         return (<div>
             <Container style={{ position: 'fixed', top: 0, bottom: 0, left: 0, right: 0, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -90,28 +86,9 @@ const Login = () => {
         </div>)
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     return(<div>{LoginPage()}</div>);
 
 }
 
 export default Login;
+
