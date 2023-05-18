@@ -7,6 +7,7 @@ import ResponsiveAppBar from "./components/Header";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import User from "./components/User";
+import CreateFilm from "./components/CreateFilm";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
                 <Route path="/users/login" element={<Login/>}/>
                 <Route path="/users/register" element={<Register/>}/>
                 <Route path="/Users/:id" element={<User/>}/>
+                <Route path="/films/create" element={<CreateFilm/>}/>
 
             </Routes>
 
