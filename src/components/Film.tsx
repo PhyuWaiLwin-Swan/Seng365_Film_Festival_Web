@@ -206,15 +206,17 @@ const EachFilm =() => {
             <div style={{display: 'inline-block', padding: "10px"}}>
                 <FilmProfile key={oneFilm.filmId + oneFilm.title} film={oneFilm}/>
             </div>
+            {(oneFilm.directorId.toString() === localStorage.getItem("userId")) && (
+                <div>
+                    <Button style={{height: "55px",width:"85px",paddingLeft:"10px", paddingRight:"10px"}}
+                            variant="contained"
+                            onClick={handleDeleteDialogOpen}>
+                        Delete
+                    </Button>
+                    <div>{DeleteDialog("Delete Film", "Are you sure that you want to delete a film?")}</div>
+                </div>
 
-            <div>
-                <Button style={{height: "55px",width:"85px",paddingLeft:"10px", paddingRight:"10px"}}
-                        variant="contained"
-                        onClick={handleDeleteDialogOpen}>
-                    Delete
-                </Button>
-                <div>{DeleteDialog("Delete Film", "Are you sure that you want to delete a film?")}</div>
-            </div>
+                )}
             <div style={{display: 'inline-block', padding: "10px"}}>
                 <TableContainer component={Paper}>
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">

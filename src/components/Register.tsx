@@ -9,23 +9,6 @@ import axios from "axios";
 import domain from "../domain";
 import {useNavigate} from "react-router-dom";
 
-// const useStyles = makeStyles((theme: { spacing: (arg0: number) => any; }) => ({
-//     root: {
-//         display: 'flex',
-//         flexDirection: 'column',
-//         justifyContent: 'center',
-//         alignItems: 'center',
-//         padding: theme.spacing(2),
-//
-//         '& .MuiTextField-root': {
-//             margin: theme.spacing(1),
-//             width: '300px',
-//         },
-//         '& .MuiButtonBase-root': {
-//             margin: theme.spacing(2),
-//         },
-//     },
-// }));
 
 const Register = () => {
     // const Register = ({ handleClose }) => {
