@@ -36,3 +36,26 @@
     transform: rotate(360deg);
   }
 }
+
+.app-img {
+  height: 400px;
+  width: 400px;
+
+}
+.custom-button {
+  background-color: blue;
+  color: white;
+  padding: 10px;
+}
+
+.dateTimeSelecter {
+  width: 100%;
+  background: aliceblue;
+  color: white;
+  padding: 40px;
+  padding-bottom: 40px;
+}
+
+.eachBox {
+  padding: 20px;
+}
