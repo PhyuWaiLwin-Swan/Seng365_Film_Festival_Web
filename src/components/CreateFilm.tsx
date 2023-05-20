@@ -207,6 +207,7 @@ const CreateFilm = () => {
                                        readOnly: false,
                                    }}
                                    variant="standard"
+                               value={film.title}
                                    onChange= {(e) => setFilm((prevFilm) => ({ ...prevFilm, title:  e.target.value}))}
 
                         />

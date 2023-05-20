@@ -14,6 +14,7 @@ const GetImage = ({ type, id }: { type: string, id: number}) => {
             src={imageSrc}
             className="app-img"
             component="img"
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             onError={() => setImageError(true)}
         />
     );

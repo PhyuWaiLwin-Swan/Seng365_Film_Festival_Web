@@ -8,6 +8,7 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import User from "./components/User";
 import CreateFilm from "./components/CreateFilm";
+import AllFilms from "./components/AllFilms";
 
 function App() {
   return (
@@ -16,7 +17,7 @@ function App() {
           <div>
             <ResponsiveAppBar></ResponsiveAppBar>
             <Routes>
-                <Route path="/films" element={<FilmList/>}/>
+                <Route path="/films" element={<AllFilms/>}/>
                 <Route path="/films/:id" element={<Film/>}/>
                 <Route path="/users/login" element={<Login/>}/>
                 <Route path="/users/register" element={<Register/>}/>

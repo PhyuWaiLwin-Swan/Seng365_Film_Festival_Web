@@ -16,6 +16,8 @@ import {Link} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import domain from "../domain";
 import axios from "axios";
+import Getimage from "./Getimage";
+import GetImage from "./Getimage";
 const pages = ['Film'];
 const settings = ['Profile','Logout'];
 
@@ -39,7 +41,7 @@ function ResponsiveAppBar() {
     }
 
     const handleLoadLoginPage = () => {
-        navigate("/users/login")
+        window.location.href = `/users/login`;
     }
     const handleLoadOut = () => {
         localStorage.clear()
@@ -61,7 +63,7 @@ function ResponsiveAppBar() {
                 setErrorMessage(error.toString())
                 console.log(error)
             })
-        navigate("/films/")
+        window.location.href = `/films`;
     }
 
     const handleLoadRegisterPage = () => {
@@ -73,6 +75,11 @@ function ResponsiveAppBar() {
         localStorage.setItem("searchString","");
         window.location.href = `/films`;
     };
+
+    const handleCreateFilmMenu = () =>{
+        setAnchorElNav(null);
+        window.location.href = `/films/create`;
+    }
 
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
@@ -99,9 +106,9 @@ function ResponsiveAppBar() {
                             variant="h6"
                             noWrap
                             component="a"
-                            href="/"
+                            href="/films"
                             sx={{
-                                mr: 2,
+                                mr: 6,
                                 display: {xs: 'none', md: 'flex'},
                                 fontFamily: 'monospace',
                                 fontWeight: 700,
@@ -112,78 +119,55 @@ function ResponsiveAppBar() {
                         >
                             Film Festival
                         </Typography>
+                        {token !== null && (
+                            <Typography
 
-                        <Box sx={{flexGrow: 1, display: {xs: 'flex', md: 'none'}}}>
-                            <IconButton
-                                size="large"
-                                aria-label="account of current user"
-                                aria-controls="menu-appbar"
-                                aria-haspopup="true"
-                                onClick={handleOpenNavMenu}
-                                color="inherit"
-                            >
-                                <MenuIcon/>
-                            </IconButton>
-                            <Menu
-                                id="menu-appbar"
-                                anchorEl={anchorElNav}
-                                anchorOrigin={{
-                                    vertical: 'bottom',
-                                    horizontal: 'left',
-                                }}
-                                keepMounted
-                                transformOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'left',
-                                }}
-                                open={Boolean(anchorElNav)}
-                                onClose={handleCloseNavMenu}
-                                sx={{
-                                    display: {xs: 'block', md: 'none'},
-                                }}
-                            >
+                                        component="a"
+                                        href="/films/create"
+                                        textAlign="center"
+                                        sx={{
+                                            mr: 2,
+                                            display: {xs: 'none', md: 'flex'},
+                                            fontFamily: 'monospace',
+                                            fontWeight: 700,
+                                            letterSpacing: '.0rem',
+                                            color: 'inherit',
+                                            textDecoration: 'none',
+                                        }}>Create Film</Typography>
+                        )
 
-                                <MenuItem key="filmButton" onClick={handleCloseNavMenu}>
-                                    <Typography textAlign="center">Films</Typography>
-                                </MenuItem>
 
-                            </Menu>
-                        </Box>
-                        <AdbIcon sx={{display: {xs: 'flex', md: 'none'}, mr: 1}}/>
+
+                        }
                         <Typography
-                            variant="h5"
-                            noWrap
+
                             component="a"
-                            href=""
+                            href="/films"
+                            textAlign="center"
                             sx={{
                                 mr: 2,
-                                display: {xs: 'flex', md: 'none'},
-                                flexGrow: 1,
+                                display: {xs: 'none', md: 'flex'},
                                 fontFamily: 'monospace',
                                 fontWeight: 700,
-                                letterSpacing: '.3rem',
+                                letterSpacing: '.0rem',
                                 color: 'inherit',
                                 textDecoration: 'none',
-                            }}
-                        >
-                            LOGO
-                        </Typography>
+                            }}>Film</Typography>
+
                         <Box sx={{flexGrow: 1, display: {xs: 'none', md: 'flex'}}}>
-                            {pages.map((page) => (
-                                <Button
-                                    key={page}
-                                    onClick={handleCloseNavMenu}
-                                    sx={{my: 2, color: 'white', display: 'block'}}
-                                >
-                                    {page}
-                                </Button>
-                            ))}
+
                         </Box>
 
                         <Box sx={{flexGrow: 0}}>
                             <Tooltip title="Open settings">
                                 <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
-                                    <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg"/>
+                                    {localStorage.getItem("userId") !== null ? (
+                                        <div style={{width: "40px", height: "40px", padding: "5px"}}><GetImage type="users" id={parseInt(localStorage.getItem("userId")!)} />
+                                        </div>
+                                    ) : (
+                                        <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                                    )}
+
                                 </IconButton>
                             </Tooltip>
                             <Menu

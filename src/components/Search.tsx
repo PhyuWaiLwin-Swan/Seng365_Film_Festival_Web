@@ -9,11 +9,12 @@ import {
     FormControlLabel,
     FormGroup,
     FormLabel,
-    IconButton,
+    IconButton, RadioGroup,
     Switch, TextField,
     ToggleButton, ToggleButtonGroup,
     Typography
 } from "@mui/material";
+import Radio from '@mui/material/Radio';
 import axios from "axios";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
@@ -28,6 +29,7 @@ const Search = () => {
     });
     const [searhString,setSearchString] = useSearchParams();
     const [showAgeForm, setShowAgeForm] = useState(false);
+    const [showSortingForm, setShowSortingForm] = useState(false);
 
     const [showGenreForm, setShowGenreForm] = useState(false);
     const [genre,setGenre] = useState<Array<Genre>>([]);
@@ -51,6 +53,8 @@ const Search = () => {
         TBC: false
     });
 
+    const [sortingState,setSortingState] = useState("");
+
     const handleSearch = () => {
         let queryParams ="";
         if (query.q != "") {
@@ -69,6 +73,9 @@ const Search = () => {
                 }
             }
         });
+        if(sortingState != ""){
+            queryParams += "&sortBy=" + sortingState;
+        }
         if (queryParams!== ""){
             if (queryParams.startsWith("&"))
             {queryParams= queryParams.substring(1,)}
@@ -76,9 +83,6 @@ const Search = () => {
         }
         localStorage.setItem("searchString", queryParams)
         window.location.href = `/films${queryParams}`;
-        // setQueryParams(queryParams)
-        // return queryParams
-
 
 
     };
@@ -228,6 +232,45 @@ const Search = () => {
             </FormGroup></FormControl>)}
             </div>)
     }
+    const  checkBoxForSorting = () => {
+
+        return (
+
+            <div style={{display:"inline-grid"}}>
+                <ToggleButton
+                    value="check"
+                    selected={showSortingForm}
+                    onChange={(event,newState)=>handleToggle(showSortingForm,setShowSortingForm)}
+                >
+                    Sort by
+                </ToggleButton>
+                {showSortingForm && (
+
+                    <FormControl sx={{m: 3}} component="fieldset" variant="standard">
+                        <FormLabel component="legend">Choose sort by</FormLabel>
+                <RadioGroup
+                    aria-labelledby="demo-radio-buttons-group-label"
+                    defaultValue="female"
+                    name="radio-buttons-group"
+                    onChange={(event) => setSortingState(event.target.value)}
+                >
+                    <FormControlLabel value="ALPHABETICAL_ASC" control={<Radio />} label="Alphabetical ascending order" />
+                    <FormControlLabel value="ALPHABETICAL_DESC" control={<Radio />} label="Alphabetical descending order" />
+                    <FormControlLabel value="RELEASED_ASC" control={<Radio />} label="Release date ascending order" />
+                    <FormControlLabel value="RELEASED_DESC" control={<Radio />} label="Release date descending order" />
+                    <FormControlLabel value="RATING_ASC" control={<Radio />} label="Rating ascending order" />
+                    <FormControlLabel value="RATING_DESC" control={<Radio />} label="Rating descending order" />
+                    <FormControlLabel value="" control={<Radio />} label="None of them" />
+
+                </RadioGroup>
+            </FormControl>
+                    )
+                }
+            </div>
+
+
+                    )
+    }
 
 
     if (errorFlag) {
@@ -253,6 +296,7 @@ const Search = () => {
                 <div style={{display: "flex"}}>
                     <div>{checkBoxForAgeString()}</div>
                     <div>{GenreCheckboxes()}</div>
+                    <div>{checkBoxForSorting()}</div>
                 </div>
             </div>
         );

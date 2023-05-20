@@ -1,29 +1,31 @@
 import axios from 'axios';
 import React, {useState} from "react";
 import CSS from 'csstype';
-import {Paper, AlertTitle, Alert, Box,} from "@mui/material";
+import {
+    Paper,
+    AlertTitle,
+    Alert,
+    Box,
+    ToggleButton,
+    FormControl,
+    FormLabel,
+    RadioGroup,
+    FormControlLabel,
+} from "@mui/material";
 import FilmListObject from "./FilmListObject";
 import Search from "./Search";
 import domain from "../domain";
-function chunkData(data: Film[]) {
-    const chunkSize = 5; // number of items per row
-    const chunks = [];
+import Radio from "@mui/material/Radio";
 
-    for (let i = 0; i < data.length; i += chunkSize) {
-        chunks.push(data.slice(i, i + chunkSize));
-    }
 
-    return chunks;
-}
-
-const FilmsPerPage = 10;
 
 const FilmList = (props: any) => {
     const [films, setFilms] = React.useState <Array<Film>>([])
     const [currentPage, setCurrentPage] = React.useState(1);
     const [errorFlag, setErrorFlag] = React.useState(false)
     const [errorMessage, setErrorMessage] = React.useState("")
-    const filmChunk = chunkData(films)
+    const [FilmsPerPage,setFilmsPerPage] = React.useState(10)
+    const [showNoOFFilm,setShowNoOFFilm] = React.useState(false);
     // console.log(props.query.queryString)
 
 
@@ -93,6 +95,62 @@ const FilmList = (props: any) => {
             </div>
         );
     };
+    const handleToggle = (state:any,setState: React.Dispatch<React.SetStateAction<any>>) => {
+        setState(!state);
+
+    }
+    const  DisplayFilmPerPage = () => {
+
+        return (
+
+            <div style={{display:"inline-grid"}}>
+                <ToggleButton
+                    value="check"
+                    selected={showNoOFFilm}
+                    onChange={(event,newState)=>handleToggle(showNoOFFilm,setShowNoOFFilm)}
+                >
+                    Display films per page
+                </ToggleButton>
+                {showNoOFFilm && (
+
+                    <FormControl sx={{m: 3}} component="fieldset" variant="standard">
+                        <FormLabel component="legend">Choose number of films per page</FormLabel>
+                        <RadioGroup
+                            aria-labelledby="demo-radio-buttons-group-label"
+                            defaultValue="female"
+                            name="radio-buttons-group"
+                            onChange={(event) => setFilmsPerPage(parseInt(event.target.value))}
+                        >
+                            <FormControlLabel value="5" control={<Radio />} label="5 film per page" />
+                            <FormControlLabel value="6" control={<Radio />} label="6 film per page" />
+                            <FormControlLabel value="7" control={<Radio />} label="7 film per page" />
+                            <FormControlLabel value="8" control={<Radio />} label="8 film per page" />
+                            <FormControlLabel value="9" control={<Radio />} label="9 film per page" />
+                            <FormControlLabel value="10" control={<Radio />} label="10 film per page" />
+
+                        </RadioGroup>
+                    </FormControl>
+                )
+                }
+            </div>
+        )
+    }
+
+    const DisplayFilmList = () =>{
+        return (<div>
+            <div>{DisplayFilmPerPage()}</div>
+            <div>
+                <div style={{display: 'flex', padding: "20px", flexWrap: 'wrap', gap: '10px'}}>
+                    {displayFilms()}
+                </div>
+                <div style={{display: 'flex', justifyContent: 'center', marginTop: '10px'}}>
+                    {displayPagination()}
+                </div>
+            </div>
+        </div>)
+    }
+
+
     if (errorFlag) {
         return (
             <div>
@@ -108,17 +166,7 @@ const FilmList = (props: any) => {
         )
     } else {
         return (
-            <div style={{padding: "20px"}}>
-                <Search></Search>
-                <div>
-                    <div style={{display: 'flex', padding: "20px", flexWrap: 'wrap', gap: '10px'}}>
-                        {displayFilms()}
-                    </div>
-                    <div style={{display: 'flex', justifyContent: 'center', marginTop: '10px'}}>
-                        {displayPagination()}
-                    </div>
-                </div>
-            </div>
+                <div>{DisplayFilmList()}</div>
         );
     }
 };

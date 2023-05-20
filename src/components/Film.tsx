@@ -11,13 +11,24 @@ import {
     TableRow,
     TableHead,
     TableBody,
-    Container, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions
+    Container,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogContentText,
+    DialogActions,
+    ToggleButton,
+    FormControl,
+    FormLabel, FormGroup, FormControlLabel, Checkbox
 } from "@mui/material";
 import FilmProfile from "./FilmProfile";
 import domain from "../domain";
 import {useFilmStore} from "../store/useFilmStore";
 import Button from "@mui/material/Button";
 import GetImage from "./Getimage";
+import Films from "./Films";
+import handleToggle from "./Helper";
+import FilmList from "./FilmList";
 
 const EachFilm =() => {
     const {id} = useParams();
@@ -45,9 +56,11 @@ const EachFilm =() => {
     const [errorMessage, setErrorMessage] = React.useState("")
     const token = localStorage.getItem("token")
     const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false)
+
     const [openEditDialog, setOpenEditDialog] = React.useState(false)
     const deleteFilmFromStore = useFilmStore(state => state.removeFilm)
     const editFilmFromStore = useFilmStore(state=>state.editFilm)
+    const navigate = useNavigate();
     React.useEffect(() => {
         const getOneFilm = () => {
             axios.get(domain+"/films/"+id)
@@ -86,12 +99,14 @@ const EachFilm =() => {
         setOpenDeleteDialog(false);
     };
     const handleDeleteDialogOpen = () => {
+
         setOpenDeleteDialog(true);
     };
     const handleEditDialogClose = () => {
         setOpenEditDialog(false);
     };
     const handleEditDialogOpen = () => {
+        //////////////////////////////////////////////////////////////////////////////////////
         setOpenEditDialog(true);
     };
     const deleteFilm = () => {
@@ -107,7 +122,7 @@ const EachFilm =() => {
 
             .then((response) => {
 
-                // navigate('/users')
+                navigate('/films')
 
             }, (error) => {
 
@@ -186,7 +201,10 @@ const EachFilm =() => {
             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
         >
             <TableCell align="center" valign="middle">
+                <div style={{width: "40px", height: "40px", padding: "5px"}}>
                 <GetImage type="users" id={review.reviewerId} />
+                </div>
+
 
 
             </TableCell>
@@ -219,6 +237,7 @@ const EachFilm =() => {
                 </div>
                 {(oneFilm.directorId.toString() === localStorage.getItem("userId")) && (
                     <div>
+                    <div>
                         <Button style={{height: "55px", width: "85px", paddingLeft: "10px", paddingRight: "10px"}}
                                 variant="contained"
                                 onClick={handleDeleteDialogOpen}>
@@ -226,8 +245,17 @@ const EachFilm =() => {
                         </Button>
                         <div>{DeleteDialog("Delete Film", "Are you sure that you want to delete a film?")}</div>
                     </div>
+                        <div>
+                            <Button style={{height: "55px", width: "85px", paddingLeft: "10px", paddingRight: "10px"}}
+                                    variant="contained"
+                                    onClick={handleEditDialogOpen}>
+                                Edit
+                            </Button>
+                        </div>
 
+                    </div>
                 )}
+
                 <div style={{display: 'inline-block', padding: "10px"}}>
                     <TableContainer component={Paper}>
                         <Table sx={{minWidth: 650}} aria-label="simple table">
