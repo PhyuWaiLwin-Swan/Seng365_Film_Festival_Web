@@ -71,25 +71,45 @@ const CreateFilm = () => {
             e.preventDefault();
         console.log(film);
             axios.post(domain  + "/films",{
-                headers: {
-            'X-Authorization': localStorage.getItem("token"),
-                'Content-Type': 'application/json'
-        }, data:{
                 "title": film.title,
                 "description": film.description,
                 "releaseDate": film.releaseDate,
                 "genreId": film.genreId,
                 "runtime": film.runtime,
                 "ageRating": film.ageRating
-                }
+            },{
+                headers: {
+            'X-Authorization': localStorage.getItem("token"),
+                'Content-Type': 'application/json'
+        }
     }
             )
                 .then((response) => {
                     setErrorFlag(false)
                     setErrorMessage("")
 
-                    // navigate('/films/'+response.data.filmId)
-                    setFilm((prevFilm) => ({ ...prevFilm, filmId:  response.data.filmId}))
+
+                    // setFilm((prevFilm) => ({ ...prevFilm, filmId:  response.data.filmId}))
+                    if (imageFile) {
+                        axios.put(domain + "/films/" + response.data.filmId+"/image", imageFile,{
+                                headers: {
+                                    'X-Authorization': localStorage.getItem("token"),
+                                    'Content-Type': 'image/gif'
+                                }
+                            }
+                        )
+                            .then((response) => {
+                                setErrorFlag(false)
+                                setErrorMessage("")
+                                navigate('/films/' + response.data.filmId)
+
+                            }, (error) => {
+
+                                setErrorFlag(true)
+                                setErrorMessage(error.toString())
+                            })
+                    }
+                    navigate('/films/'+response.data.filmId)
 
                 }, (error) => {
 
@@ -98,25 +118,7 @@ const CreateFilm = () => {
                 })
         console.log(localStorage.getItem("token"));
 
-        // if (imageFile) {
-        //     axios.put(domain + "/films/" + film.filmId, {
-        //             headers: {
-        //                 'X-Authorization': localStorage.getItem("token"),
-        //                 'Content-Type': 'image/gif'
-        //             }, data: imageFile
-        //         }
-        //     )
-        //         .then((response) => {
-        //             setErrorFlag(false)
-        //             setErrorMessage("")
-        //             navigate('/films/' + response.data.filmId)
-        //
-        //         }, (error) => {
-        //
-        //             setErrorFlag(true)
-        //             setErrorMessage(error.toString())
-        //         })
-        // }
+
     }
     const [genre,setGenre] = useState<Array<Genre>>([]);
     const genreList = genre.map(obj=>obj.name);
@@ -295,7 +297,20 @@ const CreateFilm = () => {
 
 
 
-    return (<div>{CreateFilmPage()}</div>)
+    if (errorFlag) {
+        return (
+            <div>
+
+                <h1>Users</h1>
+                <div style={{color: "red"}}>
+                    {errorMessage}
+
+                </div>
+
+            </div>
+
+        )
+    } else {return (<div>{CreateFilmPage()}</div>)}
 
 
 

@@ -93,19 +93,34 @@ const FilmList = (props: any) => {
             </div>
         );
     };
-    return (
-        <div style={{padding:"20px"}}>
-        <Search></Search>
-        <div >
-            <div style={{ display: 'flex', padding: "20px", flexWrap: 'wrap', gap: '10px' }}>
-                {displayFilms()}
+    if (errorFlag) {
+        return (
+            <div>
+
+                <h1>Users</h1>
+                <div style={{color: "red"}}>
+                    {errorMessage}
+
+                </div>
+
             </div>
-            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10px' }}>
-                {displayPagination()}
+
+        )
+    } else {
+        return (
+            <div style={{padding: "20px"}}>
+                <Search></Search>
+                <div>
+                    <div style={{display: 'flex', padding: "20px", flexWrap: 'wrap', gap: '10px'}}>
+                        {displayFilms()}
+                    </div>
+                    <div style={{display: 'flex', justifyContent: 'center', marginTop: '10px'}}>
+                        {displayPagination()}
+                    </div>
+                </div>
             </div>
-        </div>
-        </div>
-    );
+        );
+    }
 };
 
 export default FilmList;

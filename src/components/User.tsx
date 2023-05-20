@@ -5,6 +5,7 @@ import domain from "../domain";
 import {Card, CardActionArea, CardActions, CardContent, CardMedia, Container, Typography} from "@mui/material";
 import CSS from "csstype";
 import FilmProfile from "./FilmProfile";
+import GetImage from "./Getimage";
 
 const User = () => {
     const navigate = useNavigate();
@@ -80,14 +81,7 @@ const User = () => {
     const UserObject = () => {
         return (<div style={{padding: "10px"}}>
             <Card sx={{maxWidth: 400}}>
-
-                <CardMedia
-                    src={domain + `/films/${user.image_filename}/image`}
-                    component="img"
-                    height="140"
-                    image={user.image_filename}
-                    alt=""
-                />
+                <GetImage type="users" id={user.userId} />
                 <CardContent>
                     <Typography gutterBottom variant="h6" component="div">
                         Email : {user.email}

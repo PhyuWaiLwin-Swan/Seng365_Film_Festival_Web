@@ -17,6 +17,7 @@ import FilmProfile from "./FilmProfile";
 import domain from "../domain";
 import {useFilmStore} from "../store/useFilmStore";
 import Button from "@mui/material/Button";
+import GetImage from "./Getimage";
 
 const EachFilm =() => {
     const {id} = useParams();
@@ -185,12 +186,9 @@ const EachFilm =() => {
             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
         >
             <TableCell align="center" valign="middle">
-                <CardMedia
-                        component="img"
-                        src={domain+`/users/${review.reviewerId}/image`}
-                        alt=""
-                        style={{ width: "30px", height: "30px", margin: 0, padding: 0}}
-                    />
+                <GetImage type="users" id={review.reviewerId} />
+
+
             </TableCell>
 
             <TableCell align="right">{review.reviewerFirstName}</TableCell>
@@ -201,46 +199,60 @@ const EachFilm =() => {
         )
     }
 
+    if (errorFlag) {
+        return (
+            <div>
 
-    return (<Container style={{display: 'inline-block', padding: "10px",verticalAlign: 'middle'}} >
-            <div style={{display: 'inline-block', padding: "10px"}}>
-                <FilmProfile key={oneFilm.filmId + oneFilm.title} film={oneFilm}/>
-            </div>
-            {(oneFilm.directorId.toString() === localStorage.getItem("userId")) && (
-                <div>
-                    <Button style={{height: "55px",width:"85px",paddingLeft:"10px", paddingRight:"10px"}}
-                            variant="contained"
-                            onClick={handleDeleteDialogOpen}>
-                        Delete
-                    </Button>
-                    <div>{DeleteDialog("Delete Film", "Are you sure that you want to delete a film?")}</div>
+                <h1>Users</h1>
+                <div style={{color: "red"}}>
+                    {errorMessage}
+
                 </div>
 
-                )}
-            <div style={{display: 'inline-block', padding: "10px"}}>
-                <TableContainer component={Paper}>
-                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                        <TableHead>
-                            <h4>Total Review : {reviews.length}</h4>
-                            <TableRow>
-                                <TableCell align="left">Profile picture</TableCell>
-                                <TableCell align="right">Reviewer First Name</TableCell>
-                                <TableCell align="right">Reviewer Last Name</TableCell>
-                                <TableCell align="right">Rating</TableCell>
-                                <TableCell align="right">Review</TableCell>
-
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {list_of_review()}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
             </div>
 
-        </Container>
+        )
+    } else {
+        return (<Container style={{display: 'inline-block', padding: "10px", verticalAlign: 'middle'}}>
+                <div style={{display: 'inline-block', padding: "10px"}}>
+                    <FilmProfile key={oneFilm.filmId + oneFilm.title} film={oneFilm}/>
+                </div>
+                {(oneFilm.directorId.toString() === localStorage.getItem("userId")) && (
+                    <div>
+                        <Button style={{height: "55px", width: "85px", paddingLeft: "10px", paddingRight: "10px"}}
+                                variant="contained"
+                                onClick={handleDeleteDialogOpen}>
+                            Delete
+                        </Button>
+                        <div>{DeleteDialog("Delete Film", "Are you sure that you want to delete a film?")}</div>
+                    </div>
 
-)
+                )}
+                <div style={{display: 'inline-block', padding: "10px"}}>
+                    <TableContainer component={Paper}>
+                        <Table sx={{minWidth: 650}} aria-label="simple table">
+                            <TableHead>
+                                <h4>Total Review : {reviews.length}</h4>
+                                <TableRow>
+                                    <TableCell align="left">Profile picture</TableCell>
+                                    <TableCell align="right">Reviewer First Name</TableCell>
+                                    <TableCell align="right">Reviewer Last Name</TableCell>
+                                    <TableCell align="right">Rating</TableCell>
+                                    <TableCell align="right">Review</TableCell>
+
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {list_of_review()}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </div>
+
+            </Container>
+
+        )
+    }
 }
 
 export default EachFilm;

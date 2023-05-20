@@ -14,7 +14,8 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import {Link} from "@mui/material";
 import {useNavigate} from "react-router-dom";
-
+import domain from "../domain";
+import axios from "axios";
 const pages = ['Film'];
 const settings = ['Profile','Logout'];
 
@@ -24,6 +25,8 @@ function ResponsiveAppBar() {
     const userId = localStorage.getItem("userId")
     const token = localStorage.getItem("token")
     const navigate = useNavigate();
+    const [errorFlag, setErrorFlag] = React.useState(false)
+    const [errorMessage, setErrorMessage] = React.useState("")
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget);
     };
@@ -40,6 +43,24 @@ function ResponsiveAppBar() {
     }
     const handleLoadOut = () => {
         localStorage.clear()
+        axios.post(domain + "/users/logout", {
+            headers: {
+                'X-Authorization': token
+            }
+        })
+
+            .then((response) => {
+
+                setErrorFlag(false)
+                setErrorMessage("")
+                console.log(response.data)
+
+            }, (error) => {
+
+                setErrorFlag(true)
+                setErrorMessage(error.toString())
+                console.log(error)
+            })
         navigate("/films/")
     }
 
@@ -56,152 +77,172 @@ function ResponsiveAppBar() {
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
     };
+    if (errorFlag) {
+        return (
+            <div>
 
-    return (
-        <AppBar position="static">
-            <Container maxWidth="xl">
-                <Toolbar disableGutters>
-                    <Typography
-                        variant="h6"
-                        noWrap
-                        component="a"
-                        href="/"
-                        sx={{
-                            mr: 2,
-                            display: { xs: 'none', md: 'flex' },
-                            fontFamily: 'monospace',
-                            fontWeight: 700,
-                            letterSpacing: '.3rem',
-                            color: 'inherit',
-                            textDecoration: 'none',
-                        }}
-                    >
-                        Film Festival
-                    </Typography>
+                <h1>Users</h1>
+                <div style={{color: "red"}}>
+                    {errorMessage}
 
-                    <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-                        <IconButton
-                            size="large"
-                            aria-label="account of current user"
-                            aria-controls="menu-appbar"
-                            aria-haspopup="true"
-                            onClick={handleOpenNavMenu}
-                            color="inherit"
-                        >
-                            <MenuIcon />
-                        </IconButton>
-                        <Menu
-                            id="menu-appbar"
-                            anchorEl={anchorElNav}
-                            anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'left',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'left',
-                            }}
-                            open={Boolean(anchorElNav)}
-                            onClose={handleCloseNavMenu}
+                </div>
+
+            </div>
+
+        )
+    } else {
+        return (
+            <AppBar position="static">
+                <Container maxWidth="xl">
+                    <Toolbar disableGutters>
+                        <Typography
+                            variant="h6"
+                            noWrap
+                            component="a"
+                            href="/"
                             sx={{
-                                display: { xs: 'block', md: 'none' },
+                                mr: 2,
+                                display: {xs: 'none', md: 'flex'},
+                                fontFamily: 'monospace',
+                                fontWeight: 700,
+                                letterSpacing: '.3rem',
+                                color: 'inherit',
+                                textDecoration: 'none',
                             }}
                         >
+                            Film Festival
+                        </Typography>
 
-                            <MenuItem key="filmButton" onClick={handleCloseNavMenu}>
-                                <Typography textAlign="center">Films</Typography>
-                            </MenuItem>
-
-                        </Menu>
-                    </Box>
-                    <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-                    <Typography
-                        variant="h5"
-                        noWrap
-                        component="a"
-                        href=""
-                        sx={{
-                            mr: 2,
-                            display: { xs: 'flex', md: 'none' },
-                            flexGrow: 1,
-                            fontFamily: 'monospace',
-                            fontWeight: 700,
-                            letterSpacing: '.3rem',
-                            color: 'inherit',
-                            textDecoration: 'none',
-                        }}
-                    >
-                        LOGO
-                    </Typography>
-                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                        {pages.map((page) => (
-                            <Button
-                                key={page}
-                                onClick={handleCloseNavMenu}
-                                sx={{ my: 2, color: 'white', display: 'block' }}
+                        <Box sx={{flexGrow: 1, display: {xs: 'flex', md: 'none'}}}>
+                            <IconButton
+                                size="large"
+                                aria-label="account of current user"
+                                aria-controls="menu-appbar"
+                                aria-haspopup="true"
+                                onClick={handleOpenNavMenu}
+                                color="inherit"
                             >
-                                {page}
-                            </Button>
-                        ))}
-                    </Box>
-
-                    <Box sx={{ flexGrow: 0 }}>
-                        <Tooltip title="Open settings">
-                            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                                <MenuIcon/>
                             </IconButton>
-                        </Tooltip>
-                        <Menu
-                            sx={{ mt: '45px' }}
-                            id="menu-appbar"
-                            anchorEl={anchorElUser}
-                            anchorOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            open={Boolean(anchorElUser)}
-                            onClose={handleCloseUserMenu}
-                        >
+                            <Menu
+                                id="menu-appbar"
+                                anchorEl={anchorElNav}
+                                anchorOrigin={{
+                                    vertical: 'bottom',
+                                    horizontal: 'left',
+                                }}
+                                keepMounted
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'left',
+                                }}
+                                open={Boolean(anchorElNav)}
+                                onClose={handleCloseNavMenu}
+                                sx={{
+                                    display: {xs: 'block', md: 'none'},
+                                }}
+                            >
 
-                            {token !== null &&
-
-
-                                <><MenuItem key="userPageItem" onClick={()=>{handleCloseUserMenu(); handleLoadUser();}}>
-                                    {/*<Link to="/profile">*/}
-                                    <Typography textAlign="center">Profile</Typography>
+                                <MenuItem key="filmButton" onClick={handleCloseNavMenu}>
+                                    <Typography textAlign="center">Films</Typography>
                                 </MenuItem>
-                                    <MenuItem key="logOutItem" onClick={()=>{handleCloseUserMenu(); handleLoadOut();}}>
-                                    <Typography textAlign="center">Log out</Typography>
-                                </MenuItem></>
-                            }
-                            {token == null &&
-                                <>
-                                    <MenuItem key="loginItem" onClick={() => {
+
+                            </Menu>
+                        </Box>
+                        <AdbIcon sx={{display: {xs: 'flex', md: 'none'}, mr: 1}}/>
+                        <Typography
+                            variant="h5"
+                            noWrap
+                            component="a"
+                            href=""
+                            sx={{
+                                mr: 2,
+                                display: {xs: 'flex', md: 'none'},
+                                flexGrow: 1,
+                                fontFamily: 'monospace',
+                                fontWeight: 700,
+                                letterSpacing: '.3rem',
+                                color: 'inherit',
+                                textDecoration: 'none',
+                            }}
+                        >
+                            LOGO
+                        </Typography>
+                        <Box sx={{flexGrow: 1, display: {xs: 'none', md: 'flex'}}}>
+                            {pages.map((page) => (
+                                <Button
+                                    key={page}
+                                    onClick={handleCloseNavMenu}
+                                    sx={{my: 2, color: 'white', display: 'block'}}
+                                >
+                                    {page}
+                                </Button>
+                            ))}
+                        </Box>
+
+                        <Box sx={{flexGrow: 0}}>
+                            <Tooltip title="Open settings">
+                                <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
+                                    <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg"/>
+                                </IconButton>
+                            </Tooltip>
+                            <Menu
+                                sx={{mt: '45px'}}
+                                id="menu-appbar"
+                                anchorEl={anchorElUser}
+                                anchorOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                keepMounted
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                open={Boolean(anchorElUser)}
+                                onClose={handleCloseUserMenu}
+                            >
+
+                                {token !== null &&
+
+
+                                    <><MenuItem key="userPageItem" onClick={() => {
                                         handleCloseUserMenu();
-                                        handleLoadLoginPage();
+                                        handleLoadUser();
                                     }}>
                                         {/*<Link to="/profile">*/}
-                                        <Typography textAlign="center">Log in</Typography>
+                                        <Typography textAlign="center">Profile</Typography>
                                     </MenuItem>
-                                    <MenuItem key="registerItem" onClick={() => {
-                                        handleCloseUserMenu();
-                                        handleLoadRegisterPage();
-                                    }}>
-                                        {/*<Link to="/profile">*/}
-                                        <Typography textAlign="center">Register</Typography>
-                                </MenuItem></>
-                            }
-                        </Menu>
-                    </Box>
-                </Toolbar>
-            </Container>
-        </AppBar>
-    );
+                                        <MenuItem key="logOutItem" onClick={() => {
+                                            handleCloseUserMenu();
+                                            handleLoadOut();
+                                        }}>
+                                            <Typography textAlign="center">Log out</Typography>
+                                        </MenuItem></>
+                                }
+                                {token == null &&
+                                    <>
+                                        <MenuItem key="loginItem" onClick={() => {
+                                            handleCloseUserMenu();
+                                            handleLoadLoginPage();
+                                        }}>
+                                            {/*<Link to="/profile">*/}
+                                            <Typography textAlign="center">Log in</Typography>
+                                        </MenuItem>
+                                        <MenuItem key="registerItem" onClick={() => {
+                                            handleCloseUserMenu();
+                                            handleLoadRegisterPage();
+                                        }}>
+                                            {/*<Link to="/profile">*/}
+                                            <Typography textAlign="center">Register</Typography>
+                                        </MenuItem></>
+                                }
+                            </Menu>
+                        </Box>
+                    </Toolbar>
+                </Container>
+            </AppBar>
+        );
+    }
 }
 export default ResponsiveAppBar;

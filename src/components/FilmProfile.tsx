@@ -2,6 +2,7 @@ import React from "react";
 import CSS from "csstype";
 import {CardMedia, Container, TextField} from "@mui/material";
 import domain from "../domain";
+import GetImage from "./Getimage";
 interface IFilmProps {
     film: Film
 
@@ -21,15 +22,7 @@ const FilmProfile = (props: IFilmProps ) => {
     return(<Container style={{display:'flex'}}>
         <Container style={{display: 'grid',verticalAlign: 'middle'}} >
 
-            <CardMedia style={{padding:'20px'}}
-                src={domain+`/films/${film.filmId}/image` }
-                component="img"
-                height="400"
-                width="400"
-                image= {film.image_filename}
-                alt=""
-            />
-            {/*<> Description : {film.description}</>*/}
+            <GetImage type="films" id={film.filmId} />
 
             <TextField style={{padding:'10px'}}
                 id={film.filmId+"_title"}
@@ -72,6 +65,7 @@ const FilmProfile = (props: IFilmProps ) => {
             />
         </Container>
         <Container>
+            <GetImage type="users" id={film.directorId} />
             <TextField style={{padding:'10px'}}
                        id={film.filmId+"_directorFname"}
                        label="Director First Name"

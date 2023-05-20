@@ -49,7 +49,7 @@ const Register = () => {
                 setErrorFlag(false)
                 setErrorMessage("")
                 setUser(response.data)
-                navigate('/users/login')
+                navigate('/users/'+response.data.userId)
 
             }, (error) => {
 
@@ -60,63 +60,92 @@ const Register = () => {
         // console.log(firstName, lastName, email, password);
         // handleClose();
     };
-
-    return (
-        <div>
-        <Container style={{ position: 'fixed', top: 0, bottom: 0, left: 0, right: 0, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <Card style={{ display:"inline-grid" , minWidth:"500px",minHeight:"400px", width:"500px", height:"550px"}} >
-                <h1>Register</h1>
-                <Container style={{ display:"inline-grid" , width:"400px", height:"600px"}} >
-        <form
-            // className={classes.root}
-            onSubmit={handleSubmit}>
-            <TextField
-                margin="normal"
-                fullWidth
-                label="First Name"
-                required
-                value={firstName}
-                onChange={(e: { target: { value: React.SetStateAction<string>; }; }) => setFirstName(e.target.value)}
-            />
-            <TextField
-                margin="normal"
-                fullWidth
-                label="Last Name"
-                required
-                value={lastName}
-                onChange={(e: { target: { value: React.SetStateAction<string>; }; }) => setLastName(e.target.value)}
-            />
-            <TextField
-                margin="normal"
-                fullWidth
-                label="Email"
-                type="email"
-                required
-                value={email}
-                onChange={(e: { target: { value: React.SetStateAction<string>; }; }) => setEmail(e.target.value)}
-            />
-            <TextField
-                margin="normal"
-                fullWidth
-                label="Password"
-                type="password"
-                required
-                value={password}
-                onChange={(e: { target: { value: React.SetStateAction<string>; }; }) => setPassword(e.target.value)}
-            />
+    if (errorFlag) {
+        return (
             <div>
-                {/*<Button variant="contained" onClick={handleClose}>*/}
-                {/*    Cancel*/}
-                {/*</Button>*/}
-                <Button style={{height: "55px"}} type="submit" variant="contained">Sign up</Button>
+
+                <h1>Users</h1>
+                <div style={{color: "red"}}>
+                    {errorMessage}
+
+                </div>
 
             </div>
-        </form>
+
+        )
+    } else {
+        return (
+            <div>
+                <Container style={{
+                    position: 'fixed',
+                    top: 0,
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }}>
+                    <Card style={{
+                        display: "inline-grid",
+                        minWidth: "500px",
+                        minHeight: "400px",
+                        width: "500px",
+                        height: "550px"
+                    }}>
+                        <h1>Register</h1>
+                        <Container style={{display: "inline-grid", width: "400px", height: "600px"}}>
+                            <form
+                                // className={classes.root}
+                                onSubmit={handleSubmit}>
+                                <TextField
+                                    margin="normal"
+                                    fullWidth
+                                    label="First Name"
+                                    required
+                                    value={firstName}
+                                    onChange={(e: { target: { value: React.SetStateAction<string>; }; }) => setFirstName(e.target.value)}
+                                />
+                                <TextField
+                                    margin="normal"
+                                    fullWidth
+                                    label="Last Name"
+                                    required
+                                    value={lastName}
+                                    onChange={(e: { target: { value: React.SetStateAction<string>; }; }) => setLastName(e.target.value)}
+                                />
+                                <TextField
+                                    margin="normal"
+                                    fullWidth
+                                    label="Email"
+                                    type="email"
+                                    required
+                                    value={email}
+                                    onChange={(e: { target: { value: React.SetStateAction<string>; }; }) => setEmail(e.target.value)}
+                                />
+                                <TextField
+                                    margin="normal"
+                                    fullWidth
+                                    label="Password"
+                                    type="password"
+                                    required
+                                    value={password}
+                                    onChange={(e: { target: { value: React.SetStateAction<string>; }; }) => setPassword(e.target.value)}
+                                />
+                                <div>
+                                    {/*<Button variant="contained" onClick={handleClose}>*/}
+                                    {/*    Cancel*/}
+                                    {/*</Button>*/}
+                                    <Button style={{height: "55px"}} type="submit" variant="contained">Sign up</Button>
+
+                                </div>
+                            </form>
+                        </Container>
+                    </Card>
                 </Container>
-            </Card>
-        </Container>
-        </div>
-    );
+            </div>
+        );
+    }
 };
 
 export default Register;

@@ -35,6 +35,9 @@ const Search = () => {
     type CheckedGenres = {
         [key: string]: boolean;
     }
+    const [errorFlag, setErrorFlag] = React.useState(false)
+    const [errorMessage, setErrorMessage] = React.useState("")
+
     const [checkedGenres, setCheckedGenres] = useState<CheckedGenres>(
         genreList.reduce((acc, curr) => ({ ...acc, [curr]: false }), {})
     );
@@ -128,6 +131,10 @@ const Search = () => {
             axios.get(domain+ "/films/genres")
                 .then((response) => {
                     setGenre(response.data)
+                }, (error) => {
+
+                    setErrorFlag(true)
+                    setErrorMessage(error.toString())
                 })
 
         }
@@ -223,19 +230,33 @@ const Search = () => {
     }
 
 
+    if (errorFlag) {
+        return (
+            <div>
 
-    return (
-        <div>
+                <h1>Users</h1>
+                <div style={{color: "red"}}>
+                    {errorMessage}
 
-            <Container>{searchQ()}</Container>
+                </div>
 
-
-            <div style={{display:"flex"}}>
-            <div>{checkBoxForAgeString()}</div>
-            <div>{GenreCheckboxes()}</div>
             </div>
-        </div>
-    );
+
+        )
+    } else {
+        return (
+            <div>
+
+                <Container>{searchQ()}</Container>
+
+
+                <div style={{display: "flex"}}>
+                    <div>{checkBoxForAgeString()}</div>
+                    <div>{GenreCheckboxes()}</div>
+                </div>
+            </div>
+        );
+    }
 };
 
 export default Search;

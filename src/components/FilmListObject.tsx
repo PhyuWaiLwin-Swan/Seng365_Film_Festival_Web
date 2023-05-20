@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {
     Alert,
     AlertTitle,
@@ -15,6 +15,9 @@ import domain from "../domain";
 import {useFilmStore} from "../store/useFilmStore";
 import axios from "axios";
 import Button from "@mui/material/Button";
+import defaultImage from "../default-image.png";
+import {useNavigate} from "react-router-dom";
+import GetImage from "./Getimage";
 interface IFilmProps {
     film: Film
 
@@ -23,6 +26,7 @@ interface IFilmProps {
 const FilmListObject = (props: IFilmProps) => {
 
     const [film] = React.useState < Film > (props.film)
+
     const card: CSS.Properties = {
         padding: "30px",
         margin: "20px",
@@ -39,13 +43,10 @@ const FilmListObject = (props: IFilmProps) => {
         <div style={{padding:"10px"}}>
             <Card sx={{ maxWidth: 400 }} >
                 <CardActionArea component="a" href={`/films/${film.filmId}`}>
-                    <CardMedia
-                        src={domain+`/films/${film.filmId}/image` }
-                        component="img"
-                        height="140"
-                        image= {film.image_filename}
-                        alt=""
-                    />
+                    <Card>
+                        <GetImage type="films" id={film.filmId} />
+                    </Card>
+
                     <CardContent>
                         <Typography gutterBottom variant="h6" component="div">
                             Title : {film.title}
@@ -70,11 +71,6 @@ const FilmListObject = (props: IFilmProps) => {
 
                         </Typography>
 
-                        {/*<Button style={{height: "55px",width:"85px",paddingLeft:"10px", paddingRight:"10px"}}*/}
-                        {/*        variant="contained"*/}
-                        {/*        onClick={}>*/}
-                        {/*    Edit*/}
-                        {/*</Button>*/}
 
                     </CardContent>
                 </CardActionArea>
