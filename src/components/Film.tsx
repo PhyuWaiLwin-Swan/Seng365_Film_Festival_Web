@@ -23,10 +23,8 @@ import {
 } from "@mui/material";
 import FilmProfile from "./FilmProfile";
 import domain from "../domain";
-import {useFilmStore} from "../store/useFilmStore";
 import Button from "@mui/material/Button";
 import GetImage from "./Getimage";
-import Films from "./Films";
 import handleToggle from "./Helper";
 import FilmList from "./FilmList";
 
@@ -58,8 +56,6 @@ const EachFilm =() => {
     const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false)
 
     const [openEditDialog, setOpenEditDialog] = React.useState(false)
-    const deleteFilmFromStore = useFilmStore(state => state.removeFilm)
-    const editFilmFromStore = useFilmStore(state=>state.editFilm)
     const navigate = useNavigate();
     React.useEffect(() => {
         const getOneFilm = () => {
@@ -68,8 +64,6 @@ const EachFilm =() => {
                 setErrorFlag(false)
                 setErrorMessage("")
                 setOneFilm(response.data)
-                console.log(response.data.film);
-                console.log(response.data);
                 }, (error) => {
                 setErrorFlag(true)
                 setErrorMessage(error.toString())
@@ -85,8 +79,6 @@ const EachFilm =() => {
                     setErrorFlag(false)
                     setErrorMessage("")
                     setReviews(response.data)
-                    console.log(response.data.film);
-                    console.log(response.data);
                 }, (error) => {
                     setErrorFlag(true)
                     setErrorMessage(error.toString())
@@ -194,7 +186,6 @@ const EachFilm =() => {
     }
 
     const list_of_review = () => {
-        console.log(reviews)
         return reviews.map((review: Review) =>
         <TableRow
             key={review.reviewerId}
@@ -236,7 +227,7 @@ const EachFilm =() => {
                     <FilmProfile key={oneFilm.filmId + oneFilm.title} film={oneFilm}/>
                 </div>
                 {(oneFilm.directorId.toString() === localStorage.getItem("userId")) && (
-                    <div>
+                    <Container style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '50px' }}>
                     <div>
                         <Button style={{height: "55px", width: "85px", paddingLeft: "10px", paddingRight: "10px"}}
                                 variant="contained"
@@ -253,7 +244,7 @@ const EachFilm =() => {
                             </Button>
                         </div>
 
-                    </div>
+                    </Container>
                 )}
 
                 <div style={{display: 'inline-block', padding: "10px"}}>

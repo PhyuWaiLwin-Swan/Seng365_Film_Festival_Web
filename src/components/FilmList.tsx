@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import CSS from 'csstype';
 import {
     Paper,
@@ -18,41 +18,32 @@ import domain from "../domain";
 import Radio from "@mui/material/Radio";
 
 
+interface FilmListProps {
+    films: Film[];
+}
+const FilmList =() => {
+    const [films, setFilms] = useState<Film[]>([]);
 
-const FilmList = (props: any) => {
-    const [films, setFilms] = React.useState <Array<Film>>([])
+    useEffect(() => {
+        const storedFilms = localStorage.getItem('films');
+        console.log(storedFilms)
+        if (storedFilms) {
+            const parsedFilms = JSON.parse(storedFilms);
+            console.log(parsedFilms)
+            setFilms(parsedFilms);
+        }
+    }, []);
+
+
+
+
     const [currentPage, setCurrentPage] = React.useState(1);
     const [errorFlag, setErrorFlag] = React.useState(false)
     const [errorMessage, setErrorMessage] = React.useState("")
     const [FilmsPerPage,setFilmsPerPage] = React.useState(10)
     const [showNoOFFilm,setShowNoOFFilm] = React.useState(false);
-    // console.log(props.query.queryString)
 
 
-    React.useEffect(() => {
-        const getFilms = () => {
-            // console.log(localStorage.getItem("searchString").toString())
-            let requestLink ;
-            if(localStorage.getItem("searchString")!= null){
-                requestLink = domain  + "/films"+localStorage.getItem("searchString")
-            } else {
-                requestLink =  domain  + "/films";
-            }
-            axios.get(requestLink)
-
-                .then((response) => {
-                    setErrorFlag(false)
-                    setErrorMessage("film is not found")
-                    setFilms(response.data.films)
-                }, (error) => {
-
-                    setErrorFlag(true)
-                    setErrorMessage(error.toString())
-                })
-        }
-        getFilms()
-
-    }, [setFilms])
 
     const totalPages = Math.ceil(films.length / FilmsPerPage);
 

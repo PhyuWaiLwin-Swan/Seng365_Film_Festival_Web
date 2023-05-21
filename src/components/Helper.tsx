@@ -1,8 +1,19 @@
 import React from "react";
 
-const handleToggle = (state:any,setState: React.Dispatch<React.SetStateAction<any>>) => {
+export const handleToggle = (state:any, setState: React.Dispatch<React.SetStateAction<any>>) => {
     setState(!state);
 
 }
+export const removeDuplicateFilms = (films: Film[]) => {
+    const uniqueFilmSet = new Set();
+    const uniqueFilms = films.filter((film) => {
+        if (!uniqueFilmSet.has(film.filmId)) {
+            uniqueFilmSet.add(film.filmId);
+            return true;
+        }
+        return false;
+    });
+    return uniqueFilms;
+};
 
-export default handleToggle;
+export default {handleToggle,removeDuplicateFilms};

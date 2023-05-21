@@ -1,10 +1,12 @@
-import React from "react";
+import React, {useEffect} from "react";
 import CSS from "csstype";
 import {CardMedia, Container, TextField, ToggleButton} from "@mui/material";
 import domain from "../domain";
 import GetImage from "./Getimage";
-import handleToggle from "./Helper";
 import FilmList from "./FilmList";
+import Films from "./Films";
+import axios from "axios";
+import {handleToggle, removeDuplicateFilms} from "./Helper";
 interface IFilmProps {
     film: Film
 
@@ -21,11 +23,45 @@ const FilmProfile = (props: IFilmProps ) => {
         marginBottom: "20px",
         marginTop: "20px",
     }
-    const dislplaySimilarFilm = () =>{
-        let queryParams = "?directorId="+ film.directorId +"&"+"genreId="+film.genreId;
-        localStorage.setItem("searchString", queryParams)
+    const [errorFlag, setErrorFlag] = React.useState(false)
+    const [errorMessage, setErrorMessage] = React.useState("")
+    const [directorFilm,setDirectorFilm] = React.useState <Array<Film>>([]);
+    const [genreFilm,setGenreFilm] = React.useState <Array<Film>>([]);
+    const [uniqueFilms, setUniqueFilms] = React.useState<Film[]>([]);
+    const displaySimilarFilm = async () => {
+        try {
+            const [directorResponse, reviewerResponse] = await Promise.all([
+                axios.get(domain + '/films?directorId=' + film.directorId),
+                axios.get(domain + '/films?genreIds=' + film.genreId)
+            ]);
 
-        return <FilmList></FilmList>;
+            const directorFilms = directorResponse.data.films;
+            console.log(directorFilms)
+            const genreFilms = reviewerResponse.data.films;
+            console.log(genreFilms)
+
+            setErrorFlag(false);
+            setErrorMessage("film is not found");
+            setDirectorFilm(directorFilms);
+            setGenreFilm(genreFilms);
+
+            const combinedFilms = [...directorFilms, ...genreFilms];
+            const uniqueFilms = removeDuplicateFilms(combinedFilms);
+            const filmsJSON = JSON.stringify(uniqueFilms);
+            localStorage.setItem('films', filmsJSON);
+        } catch (error) {
+            setErrorFlag(true);
+            // setErrorMessage(error.toString());
+        }
+    };
+    useEffect(() => {
+        displaySimilarFilm();
+    }, []);
+
+    let filmList = null;
+    if (showSimilarForm) {
+
+        filmList = <FilmList />;
     }
     return(<div>
         <Container style={{display:'flex', padding: "50px"}}>
@@ -108,7 +144,7 @@ const FilmProfile = (props: IFilmProps ) => {
                 Similar Film
             </ToggleButton>
             {showSimilarForm && (
-                <div>{dislplaySimilarFilm()}</div>
+                <div style={{background:"lightcyan"}}>{filmList}</div>
 
             )}
         </div>

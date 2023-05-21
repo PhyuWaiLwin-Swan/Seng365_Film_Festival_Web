@@ -9,6 +9,7 @@ import Register from "./components/Register";
 import User from "./components/User";
 import CreateFilm from "./components/CreateFilm";
 import AllFilms from "./components/AllFilms";
+import films from "./components/Films";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
                 <Route path="/users/register" element={<Register/>}/>
                 <Route path="/Users/:id" element={<User/>}/>
                 <Route path="/films/create" element={<CreateFilm/>}/>
+                <Route path="/films/MyFilms" element={<FilmList />} />
 
             </Routes>
 

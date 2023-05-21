@@ -69,7 +69,7 @@ const CreateFilm = () => {
     }
     const submitCreateFilm = (e: { preventDefault: () => void; }) => {
             e.preventDefault();
-        console.log(film);
+
             axios.post(domain  + "/films",{
                 "title": film.title,
                 "description": film.description,
@@ -109,6 +109,7 @@ const CreateFilm = () => {
                                 setErrorMessage(error.toString())
                             })
                     }
+                    console.log(response.data.filmId);
                     navigate('/films/'+response.data.filmId)
 
                 }, (error) => {
@@ -243,7 +244,6 @@ const CreateFilm = () => {
                         onChange={(date: Dayjs | null | undefined) => {
                             if (date) {
                                 const formattedDate = dayjs(date).format('YYYY-MM-DD HH:mm:ss');
-                                console.log(formattedDate)
                                 setFilm((prevFilm) => ({ ...prevFilm, releaseDate: formattedDate }));
                             }
                         }}

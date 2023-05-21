@@ -1,45 +1,49 @@
-import React from "react";
+import React, { useEffect } from "react";
 import axios from "axios";
-import {Link, useSearchParams} from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import FilmListObject from "./FilmListObject";
 import domain from "../domain";
 import search from "./Search";
+import FilmList from "./FilmList";
+
 const Films = () => {
-    const[film, setFilm] = React.useState <  Film > ()
-    const [errorFlag, setErrorFlag] = React.useState(false)
-    const [errorMessage, setErrorMessage] = React.useState("")
-    const [searchString, setSearchString] = useSearchParams();
-    const [searchState, setSearchState] = React.useState(false);
+    const [films, setFilms] = React.useState<Array<Film>>([]);
+    const [errorFlag, setErrorFlag] = React.useState(false);
+    const [errorMessage, setErrorMessage] = React.useState("");
 
-    React.useEffect(() => {
-        const getFilm = () => {
-            // console.log("Here")
-            axios.get(domain+ "/films"+ search)
+    const getFilms = async () => {
+        let requestLink;
+        if (localStorage.getItem("searchString") != null) {
+            requestLink = domain + "/films" + localStorage.getItem("searchString");
+        } else {
+            requestLink = domain + "/films";
+        }
 
-                .then((response) => {
-                    setErrorFlag(false)
-                    setErrorMessage("film is not found")
-                    setFilm(response.data)
-                    console.log(response.data)
+        try {
+            const response = await axios.get(requestLink);
+            setErrorFlag(false);
+            setErrorMessage("film is not found");
+            const filmsJSON = JSON.stringify(response.data.films);
+            localStorage.setItem("films", filmsJSON);
+            setFilms(response.data.films);
+        } catch (error) {
+            setErrorFlag(true);
+            // @ts-ignore
+            setErrorMessage(error.toString());
+        }
+    };
 
-                }, (error) => {
+    useEffect(() => {
+        getFilms();
+    }, []); // Removed setFilms from the dependency array
 
-                    setErrorFlag(true)
-                    setErrorMessage(error.toString())
-                })}
-        getFilm()
-    }, [])
-
-
-
-    if(errorFlag) {
-        return (
-            <div>error</div>
-        )
+    if (errorFlag) {
+        return <div>error</div>;
+    } else if (films.length > 0) {
+        return <FilmList />;
     } else {
-
+        return null; // Render nothing until films data is available
     }
-
-}
+};
 
 export default Films;

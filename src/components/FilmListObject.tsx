@@ -12,7 +12,6 @@ import {
 } from "@mui/material";
 import CSS from "csstype";
 import domain from "../domain";
-import {useFilmStore} from "../store/useFilmStore";
 import axios from "axios";
 import Button from "@mui/material/Button";
 import defaultImage from "../default-image.png";
