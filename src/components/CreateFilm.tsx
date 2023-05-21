@@ -24,7 +24,7 @@ import { Toolbar } from '@mui/material'; // Update the import for Toolbar
 import { Typography as MuiTypography } from '@mui/material'; // Rename the import
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
-import dayjs, { Dayjs } from 'dayjs';
+import dayjs, { Dayjs  } from 'dayjs';
 import { DemoContainer,DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -33,28 +33,46 @@ import defaultImage from './../default-image.png';
 import './../App.css';
 // Inside your component
 
-const CreateFilm = () => {
+interface CreateFilmProps {
+    isCreate: boolean;
+    title: string;
+    filmId?: number;
+}
 
-    const[film,setFilm] = React.useState<Film>({
-        filmId : 0,
-        title : "",
+const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
+
+    const [film, setFilm] = useState({
+        filmId: filmId || 0,
+        title: '',
         directorFirstName: '',
-
         directorLastName: '',
-        releaseDate : '',
-        image_filename : '',
-        runtime : 0,
-        directorId : 0,
-        genreId : 0,
-        rating : '',
+        releaseDate: '',
+        image_filename: '',
+        runtime: 0,
+        directorId: 0,
+        genreId: 0,
+        rating: '',
         ageRating: '',
-        description: ''
-    })
+        description: '',
+    });
+    const[isCreateFilm,setIsCreateFilm] = React.useState(isCreate)
     const [errorFlag, setErrorFlag] = React.useState(false)
     const [errorMessage, setErrorMessage] = React.useState("")
     const navigate = useNavigate();
     const [value, setValue] = React.useState<Dayjs >();
     const [imageFile, setImageFile] = useState<File | null>(null);
+    if(! isCreate){
+        axios.get(domain+"/films/"+filmId)
+            .then((response) => {
+                setErrorFlag(false)
+                setErrorMessage("")
+                setFilm(response.data)
+            }, (error) => {
+                setErrorFlag(true)
+                setErrorMessage(error.toString())
+            })
+    }
+
 
     const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0]; // Use optional chaining
@@ -68,6 +86,7 @@ const CreateFilm = () => {
 
     }
     const submitCreateFilm = (e: { preventDefault: () => void; }) => {
+        const url = isCreate ? domain + '/films' : domain + '/films/' + film.filmId;
             e.preventDefault();
 
             axios.post(domain  + "/films",{
@@ -151,7 +170,20 @@ const CreateFilm = () => {
     },[setGenre])
 
 
-
+    const handleReleaseDateChange = (value: dayjs.Dayjs | null| undefined) => {
+        if (value) {
+            const formattedDate = dayjs(value).format('YYYY-MM-DD HH:mm:ss');
+            setFilm((prevFilm) => ({
+                ...prevFilm,
+                releaseDate: formattedDate,
+            }));
+        } else {
+            setFilm((prevFilm) => ({
+                ...prevFilm,
+                releaseDate: '', // Set the releaseDate to empty string if no value selected
+            }));
+        }
+    };
 
     const CreateFilmPage = () => {
         return <div>
@@ -165,131 +197,130 @@ const CreateFilm = () => {
                     border: '1px solid gray',
                     borderRadius: '4px',
                     padding: '60px',
-                    verticalAlign: 'middle'
-
+                    verticalAlign: 'middle',
                 }}
             >
-                <form
-                    onSubmit={submitCreateFilm}>
-                <h1>Create Film</h1>
-                <div className="eachBox">
+                <form onSubmit={submitCreateFilm}>
+                    <h1>{title}</h1>
+                    <div className="eachBox">
+                        <Card>
+                            <CardMedia
+                                className="app-img"
+                                component="img"
+                                image={imageFile ? URL.createObjectURL(imageFile) : defaultImage}
+                                alt={imageFile ? 'Uploaded' : 'Default'}
+                            />
+                        </Card>
+                    </div>
 
-                    <Card>
-                        <CardMedia
-                            className="app-img"
-                            component="img"
-                            image={imageFile ? URL.createObjectURL(imageFile) : defaultImage}
-                            alt={imageFile ? 'Uploaded' : 'Default'}
-                        />
-                    </Card>
-
-                </div>
-
-                <div style={{padding: "10px"}}>
+                    <div style={{ padding: '10px' }}>
                         <input
                             type="file"
                             accept="image/*"
-                            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                                handleImageUpload(event)
-                            }
+                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleImageUpload(event)}
                         />
 
-                    {imageFile &&
-                        <Button onClick={handleRemoveImage}>Remove Image</Button>}
-
-
-                    </div >
-                <div className="eachBox">
-                    <TextField style={{width:"100%"}}
-                                   id={film.filmId+"_title"}
-                                   label="Title"
-                                   defaultValue={film.title}
-                                   InputProps={{
-                                       readOnly: false,
-                                   }}
-                                   variant="standard"
-                               value={film.title}
-                                   onChange= {(e) => setFilm((prevFilm) => ({ ...prevFilm, title:  e.target.value}))}
-
-                        />
+                        {imageFile && <Button onClick={handleRemoveImage}>Remove Image</Button>}
                     </div>
-                <div className="eachBox">
-                    <TextField style={{ width:"100%"}}
-                                   id={film.filmId+"_description"}
-                                   label="Description"
-                                   // defaultValue={film.description}
-                                   InputProps={{
-                                       readOnly: false,
-                                   }}
-                                   variant="standard"
-                                   onChange= {(e) => setFilm((prevFilm) => ({ ...prevFilm, description:  e.target.value}))}
-                        />
-                    </div>
+
                     <div className="eachBox">
-                        <TextField style={{ width:"100%"}}
-                                   id={film.filmId+"_runtime"}
-                                   label="Run Time"
-                                   // defaultValue={film.runtime}
-                                   InputProps={{
-                                       readOnly: false,
-                                   }}
-                                   variant="standard"
-                                   onChange= {(e) => setFilm((prevFilm) => ({ ...prevFilm, runtime:  parseInt(e.target.value)}))}
+                        <TextField
+                            style={{ width: '100%' }}
+                            id={film.filmId + '_title'}
+                            label="Title"
+                            defaultValue={isCreate ? '' : film.title}
+                            InputProps={{
+                                readOnly: false,
+                            }}
+                            variant="standard"
+                            value={film.title}
+                            onChange={(e) => setFilm((prevFilm) => ({ ...prevFilm, title: e.target.value }))}
                         />
                     </div>
-                <div className="eachBox">
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DateTimePicker
-                        className="dateTimeSelecter"
-                        onChange={(date: Dayjs | null | undefined) => {
-                            if (date) {
-                                const formattedDate = dayjs(date).format('YYYY-MM-DD HH:mm:ss');
-                                setFilm((prevFilm) => ({ ...prevFilm, releaseDate: formattedDate }));
-                            }
-                        }}
-                        views={['year', 'month', 'day', 'hours', 'minutes', 'seconds']}
-                    />
 
-                </LocalizationProvider>
-                </div>
-
-                    <div className="eachBox"><FormControl fullWidth>
-                        <InputLabel id="select_genre">Genre</InputLabel>
-
-                        <Select
-                            labelId="genre_label"
-                            id="genre"
-                            label="Genre"
-                            onChange= {(e) => setFilm((prevFilm) => ({ ...prevFilm, genreId:  parseInt(e.target.value as string)}))}
-
-                        >
-                            {genre.map(({ genreId, name }) => <MenuItem key={genreId} value={genreId}>
-                                {name}
-                            </MenuItem>)}
-                        </Select>
-                    </FormControl>
+                    <div className="eachBox">
+                        <TextField
+                            style={{ width: '100%' }}
+                            id={film.filmId + '_description'}
+                            label="Description"
+                            defaultValue={isCreate ? '' : film.description}
+                            InputProps={{
+                                readOnly: false,
+                            }}
+                            variant="standard"
+                            onChange={(e) => setFilm((prevFilm) => ({ ...prevFilm, description: e.target.value }))}
+                        />
                     </div>
 
-                <div className="eachBox">
-                    <FormControl fullWidth>
-                        <InputLabel id="select_ageRating">Age Rating</InputLabel>
+                    <div className="eachBox">
+                        <TextField
+                            style={{ width: '100%' }}
+                            id={film.filmId + '_runtime'}
+                            label="Run Time"
+                            defaultValue={isCreate ? '' : film.runtime.toString()}
+                            InputProps={{
+                                readOnly: false,
+                            }}
+                            variant="standard"
+                            onChange={(e) => setFilm((prevFilm) => ({ ...prevFilm, runtime: parseInt(e.target.value) }))}
+                        />
+                    </div>
 
-                        <Select
-                            labelId="ageRating_label"
-                            id="ageRating"
-                            label="ageRating"
-                            onChange={(e) => setFilm((prevFilm) => ({ ...prevFilm, ageRating:  e.target.value as string}))}
-                        >
-                            {ageRatingList.map((age) => <MenuItem key={age} value={age} >
-                                    {age}
-                                </MenuItem>)}
+                    <div className="eachBox">
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DateTimePicker
+                                className="dateTimeSelecter"
+                                onChange={handleReleaseDateChange}
+                                views={['year', 'month', 'day', 'hours', 'minutes', 'seconds']}
+                                value={dayjs(film.releaseDate) || null}
+                            />
+                        </LocalizationProvider>
+                    </div>
 
-                        </Select>
-                    </FormControl>
-                </div>
-                    <Button style={{height: "55px"}} type="submit" variant="contained">Submit</Button>
+                    <div className="eachBox">
+                        <FormControl fullWidth>
+                            <InputLabel id="select_genre">Genre</InputLabel>
+
+                            <Select
+                                labelId="genre_label"
+                                id="genre"
+                                label="Genre"
+                                value={film.genreId.toString() || ''}
+                                onChange={(e) => setFilm((prevFilm) => ({ ...prevFilm, genreId: parseInt(e.target.value as string) }))}
+                            >
+                                {genre.map(({ genreId, name }) => (
+                                    <MenuItem key={genreId} value={genreId}>
+                                        {name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </div>
+
+                    <div className="eachBox">
+                        <FormControl fullWidth>
+                            <InputLabel id="select_ageRating">Age Rating</InputLabel>
+
+                            <Select
+                                labelId="ageRating_label"
+                                id="ageRating"
+                                label="ageRating"
+                                value={film.ageRating || ''}
+                                onChange={(e) => setFilm((prevFilm) => ({ ...prevFilm, ageRating: e.target.value as string }))}
+                            >
+                                {ageRatingList.map((age) => (
+                                    <MenuItem key={age} value={age}>
+                                        {age}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </div>
+
+                    <Button style={{ height: '55px' }} type="submit" variant="contained">
+                        Submit
+                    </Button>
                 </form>
-
             </Container>
         </div>
 

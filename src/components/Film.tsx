@@ -100,6 +100,8 @@ const EachFilm =() => {
     const handleEditDialogOpen = () => {
         //////////////////////////////////////////////////////////////////////////////////////
         setOpenEditDialog(true);
+        localStorage.setItem("editFilmId",oneFilm.filmId.toString());
+        window.location.href = "/edit";
     };
     const deleteFilm = () => {
         axios.delete(domain + '/films/' + oneFilm.filmId,

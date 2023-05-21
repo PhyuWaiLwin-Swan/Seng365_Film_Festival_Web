@@ -23,8 +23,17 @@ function App() {
                 <Route path="/users/login" element={<Login/>}/>
                 <Route path="/users/register" element={<Register/>}/>
                 <Route path="/Users/:id" element={<User/>}/>
-                <Route path="/films/create" element={<CreateFilm/>}/>
+                <Route
+                    path="/films/create"
+                    element={ <CreateFilm isCreate={true} title="Create Film" filmId={0} />}
+                />
+                <Route
+                    path={`/edit`}
+                    element={<CreateFilm isCreate={false} title="Edit Film" filmId={parseInt(localStorage.getItem("editFilmId") || "0")} />}
+                />
                 <Route path="/films/MyFilms" element={<FilmList />} />
+
+
 
             </Routes>
 
