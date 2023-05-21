@@ -53,7 +53,7 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
         genreId: 0,
         rating: '',
         ageRating: '',
-        description: '',
+        description: "",
     });
     const[isCreateFilm,setIsCreateFilm] = React.useState(isCreate)
     const [errorFlag, setErrorFlag] = React.useState(false)
@@ -61,17 +61,23 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
     const navigate = useNavigate();
     const [value, setValue] = React.useState<Dayjs >();
     const [imageFile, setImageFile] = useState<File | null>(null);
-    if(! isCreate){
-        axios.get(domain+"/films/"+filmId)
-            .then((response) => {
-                setErrorFlag(false)
-                setErrorMessage("")
-                setFilm(response.data)
-            }, (error) => {
-                setErrorFlag(true)
-                setErrorMessage(error.toString())
-            })
-    }
+    React.useEffect(() => {
+        if (!isCreate) {
+            axios
+                .get(domain + "/films/" + filmId)
+                .then((response) => {
+                    setErrorFlag(false);
+                    setErrorMessage("");
+                    setFilm(response.data);
+                })
+                .catch((error) => {
+                    setErrorFlag(true);
+                    setErrorMessage(error.toString());
+                });
+        }
+    }, [filmId]);
+
+    console.log(film.description)
 
 
     const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,22 +92,24 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
 
     }
     const submitCreateFilm = (e: { preventDefault: () => void; }) => {
-        const url = isCreate ? domain + '/films' : domain + '/films/' + film.filmId;
+
+        if (isCreate) {
+            const url = isCreate ? domain + '/films' : domain + '/films/' + film.filmId;
             e.preventDefault();
 
-            axios.post(domain  + "/films",{
-                "title": film.title,
-                "description": film.description,
-                "releaseDate": film.releaseDate,
-                "genreId": film.genreId,
-                "runtime": film.runtime,
-                "ageRating": film.ageRating
-            },{
-                headers: {
-            'X-Authorization': localStorage.getItem("token"),
-                'Content-Type': 'application/json'
-        }
-    }
+            axios.post(domain + "/films", {
+                    "title": film.title,
+                    "description": film.description,
+                    "releaseDate": film.releaseDate,
+                    "genreId": film.genreId,
+                    "runtime": film.runtime,
+                    "ageRating": film.ageRating
+                }, {
+                    headers: {
+                        'X-Authorization': localStorage.getItem("token"),
+                        'Content-Type': 'application/json'
+                    }
+                }
             )
                 .then((response) => {
                     setErrorFlag(false)
@@ -110,7 +118,7 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
 
                     // setFilm((prevFilm) => ({ ...prevFilm, filmId:  response.data.filmId}))
                     if (imageFile) {
-                        axios.put(domain + "/films/" + response.data.filmId+"/image", imageFile,{
+                        axios.put(domain + "/films/" + response.data.filmId + "/image", imageFile, {
                                 headers: {
                                     'X-Authorization': localStorage.getItem("token"),
                                     'Content-Type': 'image/gif'
@@ -129,13 +137,62 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
                             })
                     }
                     console.log(response.data.filmId);
-                    navigate('/films/'+response.data.filmId)
+                    navigate('/films/' + response.data.filmId)
 
                 }, (error) => {
 
                     setErrorFlag(true)
                     setErrorMessage(error.toString())
                 })
+
+        } else {
+            const url = domain + '/films/' + film.filmId;
+            e.preventDefault();
+            const formattedReleaseDate = film.releaseDate.replace("T", " ").slice(0, -5);
+
+            axios.patch(url, {
+                title: film.title,
+                description: film.description,
+                releaseDate: formattedReleaseDate,
+                genreId: film.genreId,
+                runtime: film.runtime,
+                ageRating: film.ageRating
+            }, {
+                headers: {
+                    'X-Authorization': localStorage.getItem('token'),
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then((response) => {
+                    setErrorFlag(false);
+                    setErrorMessage('');
+
+                    if (imageFile) {
+                        axios.put(domain + '/films/' + response.data.filmId + '/image', imageFile, {
+                            headers: {
+                                'X-Authorization': localStorage.getItem('token'),
+                                'Content-Type': 'image/gif'
+                            }
+                        })
+                            .then((response) => {
+                                setErrorFlag(false);
+                                setErrorMessage('');
+                                navigate('/films/' + response.data.filmId);
+                            })
+                            .catch((error) => {
+                                setErrorFlag(true);
+                                setErrorMessage(error.toString());
+                            });
+                    }
+
+                    console.log(response.data.filmId);
+                    navigate('/films/' + response.data.filmId);
+                })
+                .catch((error) => {
+                    setErrorFlag(true);
+                    setErrorMessage(error.toString());
+                });
+        }
         console.log(localStorage.getItem("token"));
 
 
@@ -243,11 +300,12 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
                             style={{ width: '100%' }}
                             id={film.filmId + '_description'}
                             label="Description"
-                            defaultValue={isCreate ? '' : film.description}
+                            defaultValue={isCreate ? '' : film.description} // Handle the case when description is null
                             InputProps={{
                                 readOnly: false,
                             }}
                             variant="standard"
+                            value={film.description}
                             onChange={(e) => setFilm((prevFilm) => ({ ...prevFilm, description: e.target.value }))}
                         />
                     </div>
@@ -262,6 +320,7 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
                                 readOnly: false,
                             }}
                             variant="standard"
+                            value={film.runtime}
                             onChange={(e) => setFilm((prevFilm) => ({ ...prevFilm, runtime: parseInt(e.target.value) }))}
                         />
                     </div>
