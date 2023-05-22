@@ -39,6 +39,7 @@ interface CreateFilmProps {
     filmId?: number;
 }
 
+
 const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
 
     const [film, setFilm] = useState({
@@ -73,6 +74,7 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
                 .catch((error) => {
                     setErrorFlag(true);
                     setErrorMessage(error.toString());
+
                 });
         }
     }, [filmId]);
@@ -116,6 +118,7 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
                     setErrorMessage("")
 
 
+
                     // setFilm((prevFilm) => ({ ...prevFilm, filmId:  response.data.filmId}))
                     if (imageFile) {
                         axios.put(domain + "/films/" + response.data.filmId + "/image", imageFile, {
@@ -143,17 +146,20 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
 
                     setErrorFlag(true)
                     setErrorMessage(error.toString())
+                    alert("Can not create the film!")
                 })
 
         } else {
             const url = domain + '/films/' + film.filmId;
             e.preventDefault();
-            const formattedReleaseDate = film.releaseDate.replace("T", " ").slice(0, -5);
+            const dateTimeString = film.releaseDate;
+            const parsedDateTime = new Date(dateTimeString);
+            const formattedDateTime = parsedDateTime.toISOString().replace("T", " ").slice(0, -5);
 
             axios.patch(url, {
                 title: film.title,
                 description: film.description,
-                releaseDate: formattedReleaseDate,
+                releaseDate: formattedDateTime,
                 genreId: film.genreId,
                 runtime: film.runtime,
                 ageRating: film.ageRating
@@ -177,7 +183,7 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
                             .then((response) => {
                                 setErrorFlag(false);
                                 setErrorMessage('');
-                                navigate('/films/' + response.data.filmId);
+                                navigate('/films/' + film.filmId );
                             })
                             .catch((error) => {
                                 setErrorFlag(true);
@@ -186,7 +192,7 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
                     }
 
                     console.log(response.data.filmId);
-                    navigate('/films/' + response.data.filmId);
+                    navigate('/films/' + film.filmId);
                 })
                 .catch((error) => {
                     setErrorFlag(true);
@@ -332,6 +338,7 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
                                 onChange={handleReleaseDateChange}
                                 views={['year', 'month', 'day', 'hours', 'minutes', 'seconds']}
                                 value={dayjs(film.releaseDate) || null}
+
                             />
                         </LocalizationProvider>
                     </div>

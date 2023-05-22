@@ -1,4 +1,5 @@
 import React from "react";
+import {Alert, AlertTitle} from "@mui/material";
 
 export const handleToggle = (state:any, setState: React.Dispatch<React.SetStateAction<any>>) => {
     setState(!state);
@@ -16,4 +17,18 @@ export const removeDuplicateFilms = (films: Film[]) => {
     return uniqueFilms;
 };
 
-export default {handleToggle,removeDuplicateFilms};
+export const MyComponent= ( message:string)=> {
+    return (
+        <Alert severity="info">
+            <AlertTitle>Alert message</AlertTitle>
+            This is an alert — <strong>{message}</strong>
+        </Alert>
+    );
+}
+
+export const CanNotCreateFilm = "Can not Create Film! \n" +
+    " The provided information is not Correct. \n" +
+    ""
+
+
+export default {MyComponent,handleToggle,removeDuplicateFilms};
