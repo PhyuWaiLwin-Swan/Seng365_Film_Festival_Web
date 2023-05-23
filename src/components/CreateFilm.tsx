@@ -79,7 +79,6 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
         }
     }, [filmId]);
 
-    console.log(film.description)
 
 
     const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {

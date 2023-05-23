@@ -21,7 +21,7 @@ function App() {
                 <Route path="/films" element={<AllFilms/>}/>
                 <Route path="/films/:id" element={<Film/>}/>
                 <Route path="/users/login" element={<Login/>}/>
-                <Route path="/users/register" element={<Register/>}/>
+                {/*<Route path="/users/register" element={<Register/>}/>*/}
                 <Route path="/Users/:id" element={<User/>}/>
                 <Route
                     path="/films/create"
@@ -32,6 +32,14 @@ function App() {
                     element={<CreateFilm isCreate={false} title="Edit Film" filmId={parseInt(localStorage.getItem("editFilmId") || "0")} />}
                 />
                 <Route path="/films/MyFilms" element={<FilmList />} />
+                <Route
+                    path="/users/:id/edit"
+                    element={ <Register isRegister={false} header="Edit" userId={parseInt(localStorage.getItem("userId") || "0")} />}
+                />
+                <Route
+                    path="/users/register"
+                    element={ <Register isRegister={true} header="Register" userId={0} />}
+                />
 
 
 

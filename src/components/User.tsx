@@ -6,6 +6,7 @@ import {Card, CardActionArea, CardActions, CardContent, CardMedia, Container, Ty
 import CSS from "csstype";
 import FilmProfile from "./FilmProfile";
 import GetImage from "./Getimage";
+import Button from "@mui/material/Button";
 
 const User = () => {
     const navigate = useNavigate();
@@ -44,9 +45,6 @@ const User = () => {
             })
     }
     const loadUser = () => {
-        console.log(userId)
-        console.log(token)
-        // navigate("/users/" + user.userId)
         axios.get(domain + "/users/" + userId, {
             headers: {
                 'X-Authorization': token
@@ -78,6 +76,10 @@ const User = () => {
 
 
     }
+    const handleEditEventOfUser = () =>{
+        navigate("edit")
+
+    }
     const UserObject = () => {
         return (<div style={{padding: "10px"}}>
             <Card sx={{maxWidth: 400}}>
@@ -90,6 +92,8 @@ const User = () => {
                         Full Name : {user.firstName} {user.lastName}
                     </Typography>
                 </CardContent>
+                <Button style={{height: "55px"}} variant="contained" onClick={handleEditEventOfUser}>Edit</Button>
+
             </Card>
         </div>)
     }
