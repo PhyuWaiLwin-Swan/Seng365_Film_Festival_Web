@@ -27,6 +27,7 @@ import Button from "@mui/material/Button";
 import GetImage from "./Getimage";
 import handleToggle from "./Helper";
 import FilmList from "./FilmList";
+import CreateReview from "./CreateReview";
 
 const EachFilm =() => {
     const {id} = useParams();
@@ -209,6 +210,17 @@ const EachFilm =() => {
         </TableRow>
         )
     }
+    const checkHasReviewOrNot =() => {
+        const idToCheck = localStorage.getItem("userId"); // Replace "123" with the ID you want to check
+
+        const isIdInReviews = reviews.some((review) => review.reviewerId.toString() === idToCheck);
+
+        if (isIdInReviews) {
+            return false
+        } else {
+            return true
+        }
+    }
 
     if (errorFlag) {
         return (
@@ -224,12 +236,16 @@ const EachFilm =() => {
 
         )
     } else {
-        return (<Container style={{display: 'inline-block', padding: "10px", verticalAlign: 'middle'}}>
+        return <Container style={{display: 'inline-block', padding: "10px", verticalAlign: 'middle'}}>
                 <div style={{display: 'inline-block', padding: "10px"}}>
                     <FilmProfile key={oneFilm.filmId + oneFilm.title} film={oneFilm}/>
                 </div>
-                {(oneFilm.directorId.toString() === localStorage.getItem("userId")) && (
-                    <Container style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '50px' }}>
+            <div style={{width:"500px",height:"100px", padding:"20px",display: 'inline-block'}}>
+                { (localStorage.getItem("token") !== "" && checkHasReviewOrNot()) &&
+                    <CreateReview filmId={oneFilm.filmId}/>
+                }
+            </div>
+                {oneFilm.directorId.toString() === localStorage.getItem("userId")  && <Container style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '50px' }}>
                     <div>
                         <Button style={{height: "55px", width: "85px", paddingLeft: "10px", paddingRight: "10px"}}
                                 variant="contained"
@@ -246,8 +262,7 @@ const EachFilm =() => {
                             </Button>
                         </div>
 
-                    </Container>
-                )}
+                    </Container>}
 
                 <div style={{display: 'inline-block', padding: "10px"}}>
                     <TableContainer component={Paper}>
@@ -271,8 +286,6 @@ const EachFilm =() => {
                 </div>
 
             </Container>
-
-        )
     }
 }
 
