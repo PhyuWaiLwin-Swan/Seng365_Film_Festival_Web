@@ -25,10 +25,19 @@ export const MyComponent= ( message:string)=> {
         </Alert>
     );
 }
+export const showAlert = (message:string) => {
+    return (dispatch: (arg0: { type: string; payload?: string; }) => void) => {
+        dispatch({ type: 'SHOW_ALERT', payload: message });
+
+        setTimeout(() => {
+            dispatch({ type: 'HIDE_ALERT' });
+        }, 3000); // Adjust the duration (in milliseconds) as per your requirement
+    };
+};
 
 export const CanNotCreateFilm = "Can not Create Film! \n" +
     " The provided information is not Correct. \n" +
     ""
 
 
-export default {MyComponent,handleToggle,removeDuplicateFilms};
+export default {MyComponent,handleToggle,removeDuplicateFilms,showAlert};

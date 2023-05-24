@@ -83,7 +83,7 @@ const User = () => {
     const UserObject = () => {
         return (<div style={{padding: "10px"}}>
             <Card sx={{maxWidth: 400}}>
-                <GetImage type="users" id={user.userId} />
+                <GetImage type="users" id={parseInt(localStorage.getItem("userId")!)} />
                 <CardContent>
                     <Typography gutterBottom variant="h6" component="div">
                         Email : {user.email}

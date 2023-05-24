@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 // import { makeStyles } from "@mui/material/styles";
 import {Card, CardMedia, TextField} from "@mui/material";
 import Button from "@mui/material/Button";
@@ -9,14 +9,21 @@ import axios from "axios";
 import domain from "../domain";
 import {useNavigate} from "react-router-dom";
 import defaultImage from "../default-image.png";
+// import { showAlert } from './alert/alertActions';
+// import {AlertContext,AlertProvider} from "./alertContext";
+import {AlertContext} from "./alertContext"
+// import {showAlert} from "./Helper";
+import { useDispatch } from 'react-redux';
 
 interface RegisterProps {
     isRegister:boolean;
-    userId: number;
     header:string
 }
-const Register: React.FC<RegisterProps> = ({ isRegister,userId ,header}) => {
 
+
+const Register: React.FC<RegisterProps> = ({ isRegister,header}) => {
+
+    const userId = parseInt(localStorage.getItem("userId")!)
     const [user, setUser] = React.useState<User>({
         userId: userId || 0,
         token: '',
@@ -35,12 +42,14 @@ const Register: React.FC<RegisterProps> = ({ isRegister,userId ,header}) => {
     const [errorFlag, setErrorFlag] = React.useState(false)
     const [errorMessage, setErrorMessage] = React.useState("")
     const [imageFile, setImageFile] = useState<File | null>(null);
+    const { alert, showAlert } = useContext(AlertContext)!;
+
 
 
     React.useEffect(() => {
 
         if (! isRegisterUser) {
-            axios.get(domain + "/users/" + userId, {
+            axios.get(domain + "/users/" + localStorage.getItem("userId"), {
                 headers: {
                     'X-Authorization': localStorage.getItem("token")
                 }
@@ -51,16 +60,16 @@ const Register: React.FC<RegisterProps> = ({ isRegister,userId ,header}) => {
                     setErrorFlag(false)
                     setErrorMessage("")
                     setUser(response.data)
-                    console.log(response.data)
+
+
 
                 }, (error) => {
 
                     setErrorFlag(true)
                     setErrorMessage(error.toString())
-                    console.log(error)
                 })
         }
-    }, [userId])
+    }, [])
 
     const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0]; // Use optional chaining
@@ -68,13 +77,15 @@ const Register: React.FC<RegisterProps> = ({ isRegister,userId ,header}) => {
             setImageFile(file);
         }
     };
+    showAlert("This is an error message", "error");
     const handleRemoveImage =  () => {
+        showAlert("This is an error message", "error");
         setImageFile(null);
 
 
     }
-    console.log(imageFile !== null)
     const handleSubmit = (e: { preventDefault: () => void; }) => {
+        showAlert('submit the changes!',"good");
         if (isRegisterUser) {
             e.preventDefault();
 
@@ -89,17 +100,7 @@ const Register: React.FC<RegisterProps> = ({ isRegister,userId ,header}) => {
                 .then((response) => {
                     setErrorFlag(false)
                     setErrorMessage("")
-
-                    if (imageFile !== null) {
-                        axios.put(domain + '/users/' + response.data.userId + '/image', imageFile, {
-                            headers: {
-                                'X-Authorization': localStorage.getItem('token'),
-                                'Content-Type': 'image/gif'
-                            }
-                        })
-                            .then((response) => {
-                                setErrorFlag(false);
-                                setErrorMessage('');axios.post(domain  + "/users/login", {
+                    axios.post(domain  + "/users/login", {
                                         "email": user.email,
                                         "password": user.password,
                                     }
@@ -118,13 +119,6 @@ const Register: React.FC<RegisterProps> = ({ isRegister,userId ,header}) => {
                                         setErrorMessage(error.toString())
                                     })
 
-                            })
-                            .catch((error) => {
-                                setErrorFlag(true);
-                                setErrorMessage(error.toString());
-                            });
-                    }
-
 
                 }, (error) => {
 
@@ -133,53 +127,105 @@ const Register: React.FC<RegisterProps> = ({ isRegister,userId ,header}) => {
                 })
 
         } else {
-            alert("image is ")
-            alert(localStorage.getItem('token'))
-            if (imageFile !== null) {
-                alert(domain + '/users/' + user.userId + '/image')
+            // if (imageFile !== null) {
+            //
+            //     axios.put(domain + '/users/' + localStorage.getItem("userId") + '/image', imageFile, {
+            //         headers: {
+            //             'X-Authorization': localStorage.getItem('token'),
+            //             'Content-Type': 'image/jpeg',
+            //         }
+            //     })
+            //         .then((response) => {
+            //             setErrorFlag(false)
+            //             setErrorMessage("")
+            //
+            //         }, (error) => {
+            //             setErrorFlag(true)
+            //             setErrorMessage(error.toString())
+            //         })
+            // }
+            // axios.patch(domain + "/users/"+localStorage.getItem("userId"), {
+            //     "firstName": user.firstName,
+            //     "lastName": user.lastName,
+            //     "email": user.email,
+            // }, {
+            //     headers: {
+            //         'X-Authorization': localStorage.getItem('token'),
+            //         'Content-Type': 'application/json'
+            //     }
+            // })
+            //     .then((response) => {
+            //         setErrorFlag(false)
+            //         setErrorMessage("")
+            //
+            //     }, (error) => {
+            //
+            //         setErrorFlag(true)
+            //         setErrorMessage(error.toString())
+            //     })
+            //
+            // // window.location.href = ("/users/"+localStorage.getItem("userId"))
+            // navigate("/users/"+localStorage.getItem("userId") )
 
-                axios.put(domain + '/users/' + localStorage.getItem("userId") + '/image', imageFile, {
+            if (imageFile !== null) {
+
+                const imageRequest = axios.put(domain + '/users/' + localStorage.getItem("userId") + '/image', imageFile, {
                     headers: {
                         'X-Authorization': localStorage.getItem('token'),
                         'Content-Type': 'image/jpeg',
                     }
-                })
-                    .then((response) => {
-                        setErrorFlag(false)
-                        setErrorMessage("")
-                        alert("image is successfully")
-                        // navigate('/films/' + response.data.filmId)
+                });
+
+                const patchRequest = axios.patch(domain + "/users/"+localStorage.getItem("userId"), {
+                    "firstName": user.firstName,
+                    "lastName": user.lastName,
+                    "email": user.email,
+                }, {
+                    headers: {
+                        'X-Authorization': localStorage.getItem('token'),
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                Promise.all([imageRequest, patchRequest])
+                    .then((responses) => {
+                        // Both requests were successful
+                        setErrorFlag(false);
+                        setErrorMessage("");
+                        // Navigate to the next page
 
                     }, (error) => {
-                        alert(error.toString())
-                        setErrorFlag(true)
-                        setErrorMessage(error.toString())
-                    })
-                alert("image is do nothing")
-            }
-            axios.patch(domain + "/users/"+userId, {
-                "firstName": user.firstName,
-                "lastName": user.lastName,
-                "email": user.email,
-            }, {
-                headers: {
-                    'X-Authorization': localStorage.getItem('token'),
-                    'Content-Type': 'application/json'
-                }
-            })
-                .then((response) => {
-                    setErrorFlag(false)
-                    setErrorMessage("")
-                    setUser(response.data)
-                    console.log("try to upload image")
-
-                    // navigate('/users/' + response.data.userId)
-
-                }, (error) => {
-
-                    setErrorFlag(true)
-                    setErrorMessage(error.toString())
+                        // At least one of the requests failed
+                        setErrorFlag(true);
+                        setErrorMessage(error.toString());
+                    });
+                navigate("/users/"+localStorage.getItem("userId"));
+            } else {
+                axios.patch(domain + "/users/"+localStorage.getItem("userId"), {
+                    "firstName": user.firstName,
+                    "lastName": user.lastName,
+                    "email": user.email,
+                }, {
+                    headers: {
+                        'X-Authorization': localStorage.getItem('token'),
+                        'Content-Type': 'application/json'
+                    }
                 })
+                    .then((responses) => {
+                        // Both requests were successful
+                        setErrorFlag(false);
+                        setErrorMessage("");
+
+                        showAlert("created","success")
+                        // Navigate to the next page
+                        navigate("/users/"+localStorage.getItem("userId"));
+                    }, (error) => {
+                        // At least one of the requests failed
+                        setErrorFlag(true);
+                        setErrorMessage(error.toString());
+                    });
+            }
+
         }
     }
     const [imageError, setImageError] = useState(false);
@@ -204,14 +250,7 @@ const Register: React.FC<RegisterProps> = ({ isRegister,userId ,header}) => {
 
                                     <div className="eachBox">
                                         <Card>
-                                            {/*<CardMedia*/}
-                                            {/*    className="app-img"*/}
-                                            {/*    component="img"*/}
-                                            {/*    image={imageFile ? URL.createObjectURL(imageFile) : defaultImage}*/}
-                                            {/*    alt={imageFile ? 'Uploaded' : 'Default'}*/}
-                                            {/*/>*/}
                                             <CardMedia
-                                                // src={imageSrc || defaultImage}
                                                 className="app-img"
                                                 component="img"
                                                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
@@ -270,6 +309,11 @@ const Register: React.FC<RegisterProps> = ({ isRegister,userId ,header}) => {
                                         value={user.email}
                                         onChange={(e) => setUser((prevUser) => ({ ...prevUser, email: e.target.value }))}
                                     />
+                                    {alert && (
+                                        <div className={`alert ${alert.severity}`}>
+                                            {alert.message}
+                                        </div>
+                                    )}
                                     {isRegister &&
                                         <TextField
                                         margin="normal"
@@ -287,6 +331,7 @@ const Register: React.FC<RegisterProps> = ({ isRegister,userId ,header}) => {
 
                                     </div>
                                 </form>
+
                             </Container>
                 </div>
             );
