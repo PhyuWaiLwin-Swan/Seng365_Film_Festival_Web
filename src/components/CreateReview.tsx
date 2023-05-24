@@ -32,6 +32,7 @@ const CreateReview = (props:filmProps)=>{
                 setErrorMessage("")
                 console.log("here submit the review")
                 alert(response.statusText)
+                window.location.reload();
 
 
             }, (error) => {

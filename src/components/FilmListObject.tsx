@@ -52,20 +52,7 @@ const FilmListObject = (props: IFilmProps) => {
         }
         getGenres()
     },[setGenre])
-    if (errorFlag) {
-        return (
-            <div>
 
-                <h1>Users</h1>
-                <div style={{color: "red"}}>
-                    {errorMessage}
-
-                </div>
-
-            </div>
-
-        )
-    } else {
         return (
 
             <div style={{padding: "10px"}}>
@@ -122,7 +109,7 @@ const FilmListObject = (props: IFilmProps) => {
                 </Card>
             </div>
         )
-    }
+
     }
 
 export default FilmListObject;

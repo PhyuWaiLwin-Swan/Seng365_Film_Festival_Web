@@ -32,10 +32,6 @@ const Register: React.FC<RegisterProps> = ({ isRegister,userId ,header}) => {
     })
     const [isRegisterUser, setIsRegisterUser] = useState(isRegister);
     const navigate = useNavigate();
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
     const [errorFlag, setErrorFlag] = React.useState(false)
     const [errorMessage, setErrorMessage] = React.useState("")
     const [imageFile, setImageFile] = useState<File | null>(null);
@@ -77,6 +73,7 @@ const Register: React.FC<RegisterProps> = ({ isRegister,userId ,header}) => {
 
 
     }
+    console.log(imageFile !== null)
     const handleSubmit = (e: { preventDefault: () => void; }) => {
         if (isRegisterUser) {
             e.preventDefault();
@@ -92,10 +89,42 @@ const Register: React.FC<RegisterProps> = ({ isRegister,userId ,header}) => {
                 .then((response) => {
                     setErrorFlag(false)
                     setErrorMessage("")
-                    setUser(response.data)
-                    localStorage.setItem("userId",response.data.userId)
-                    localStorage.setItem("token", response.data.token)
-                    navigate('/users/' + response.data.userId)
+
+                    if (imageFile !== null) {
+                        axios.put(domain + '/users/' + response.data.userId + '/image', imageFile, {
+                            headers: {
+                                'X-Authorization': localStorage.getItem('token'),
+                                'Content-Type': 'image/gif'
+                            }
+                        })
+                            .then((response) => {
+                                setErrorFlag(false);
+                                setErrorMessage('');axios.post(domain  + "/users/login", {
+                                        "email": user.email,
+                                        "password": user.password,
+                                    }
+                                )
+                                    .then((response) => {
+
+                                        setErrorFlag(false)
+                                        setErrorMessage("")
+                                        localStorage.setItem("token",response.data.token )
+                                        localStorage.setItem("userId",response.data.userId )
+                                        navigate("/users/"+response.data.userId)
+
+                                    }, (error) => {
+
+                                        setErrorFlag(true)
+                                        setErrorMessage(error.toString())
+                                    })
+
+                            })
+                            .catch((error) => {
+                                setErrorFlag(true);
+                                setErrorMessage(error.toString());
+                            });
+                    }
+
 
                 }, (error) => {
 
@@ -104,11 +133,34 @@ const Register: React.FC<RegisterProps> = ({ isRegister,userId ,header}) => {
                 })
 
         } else {
-            axios.patch(domain + "/users/register", {
+            alert("image is ")
+            alert(localStorage.getItem('token'))
+            if (imageFile !== null) {
+                alert(domain + '/users/' + user.userId + '/image')
+
+                axios.put(domain + '/users/' + localStorage.getItem("userId") + '/image', imageFile, {
+                    headers: {
+                        'X-Authorization': localStorage.getItem('token'),
+                        'Content-Type': 'image/jpeg',
+                    }
+                })
+                    .then((response) => {
+                        setErrorFlag(false)
+                        setErrorMessage("")
+                        alert("image is successfully")
+                        // navigate('/films/' + response.data.filmId)
+
+                    }, (error) => {
+                        alert(error.toString())
+                        setErrorFlag(true)
+                        setErrorMessage(error.toString())
+                    })
+                alert("image is do nothing")
+            }
+            axios.patch(domain + "/users/"+userId, {
                 "firstName": user.firstName,
                 "lastName": user.lastName,
                 "email": user.email,
-                "password": user.password,
             }, {
                 headers: {
                     'X-Authorization': localStorage.getItem('token'),
@@ -119,7 +171,9 @@ const Register: React.FC<RegisterProps> = ({ isRegister,userId ,header}) => {
                     setErrorFlag(false)
                     setErrorMessage("")
                     setUser(response.data)
-                    navigate('/users/' + response.data.userId)
+                    console.log("try to upload image")
+
+                    // navigate('/users/' + response.data.userId)
 
                 }, (error) => {
 
@@ -128,39 +182,53 @@ const Register: React.FC<RegisterProps> = ({ isRegister,userId ,header}) => {
                 })
         }
     }
+    const [imageError, setImageError] = useState(false);
 
+    const imageSrc = imageError ? defaultImage : `${domain}/${"users"}/${localStorage.getItem("userId")}/image`;
             return (
-                <div>
-                    <Container style={{
-                        position: 'fixed',
-                        top: 0,
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center'
-                    }}>
-                        <Card style={{
-                            display: "inline-grid",
-                            minWidth: "500px",
-                            width: "500px",
-                        }}>
-                            <h1>{header}</h1>
-                            <Container style={{display: "inline-grid", width: "400px"}}>
+                <div style={{paddingTop:"70px"}}>
+                            <Container
+                                style={{
+                                    display: 'inline-block',
+                                    width: '600px',
+                                    backgroundColor: 'white',
+                                    border: '1px solid gray',
+                                    borderRadius: '4px',
+                                    padding: '60px',
+                                    verticalAlign: 'middle',
+                                }}
+                            >
+                                <h1>{header}</h1>
                                 <form
-                                    // className={classes.root}
                                     onSubmit={handleSubmit}>
 
                                     <div className="eachBox">
                                         <Card>
+                                            {/*<CardMedia*/}
+                                            {/*    className="app-img"*/}
+                                            {/*    component="img"*/}
+                                            {/*    image={imageFile ? URL.createObjectURL(imageFile) : defaultImage}*/}
+                                            {/*    alt={imageFile ? 'Uploaded' : 'Default'}*/}
+                                            {/*/>*/}
                                             <CardMedia
+                                                // src={imageSrc || defaultImage}
                                                 className="app-img"
                                                 component="img"
-                                                image={imageFile ? URL.createObjectURL(imageFile) : defaultImage}
-                                                alt={imageFile ? 'Uploaded' : 'Default'}
+                                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                                image={imageFile ? URL.createObjectURL(imageFile) : imageSrc ||defaultImage}
+                                                onError={() => setImageError(true)}
                                             />
                                         </Card>
+                                    </div>
+
+                                    <div style={{ padding: '10px' }}>
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleImageUpload(event)}
+                                        />
+
+                                        {imageFile && <Button onClick={handleRemoveImage}>Remove Image</Button>}
                                     </div>
                                     <TextField
                                         margin="normal"
@@ -188,15 +256,6 @@ const Register: React.FC<RegisterProps> = ({ isRegister,userId ,header}) => {
                                         value={user.lastName}
                                         onChange={(e) => setUser((prevUser) => ({ ...prevUser, lastName: e.target.value }))}
                                     />
-                                    <div style={{ padding: '10px' }}>
-                                        <input
-                                            type="file"
-                                            accept="image/*"
-                                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleImageUpload(event)}
-                                        />
-
-                                        {imageFile && <Button onClick={handleRemoveImage}>Remove Image</Button>}
-                                    </div>
 
                                     <TextField
                                         margin="normal"
@@ -218,22 +277,17 @@ const Register: React.FC<RegisterProps> = ({ isRegister,userId ,header}) => {
                                         label="Password"
                                         type="password"
                                         required
-                                        value={password}
-                                        onChange={(e: { target: { value: React.SetStateAction<string>; }; }) => setPassword(e.target.value)}
+                                        value={user.password}
+                                        onChange={(e) => setUser((prevUser) => ({ ...prevUser, password: e.target.value }))}
                                     />
                                     }
 
                                     <div>
-                                        {/*<Button variant="contained" onClick={handleClose}>*/}
-                                        {/*    Cancel*/}
-                                        {/*</Button>*/}
                                         <Button style={{height: "55px"}} type="submit" variant="contained">{isRegister ? "Sign up":"Save"}</Button>
 
                                     </div>
                                 </form>
                             </Container>
-                        </Card>
-                    </Container>
                 </div>
             );
 

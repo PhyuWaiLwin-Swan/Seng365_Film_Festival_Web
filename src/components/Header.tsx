@@ -136,20 +136,7 @@ function ResponsiveAppBar() {
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
     };
-    if (errorFlag) {
-        return (
-            <div>
 
-                <h1>Users</h1>
-                <div style={{color: "red"}}>
-                    {errorMessage}
-
-                </div>
-
-            </div>
-
-        )
-    } else {
         return (
             <AppBar position="static">
                 <Container maxWidth="xl">
@@ -306,6 +293,6 @@ function ResponsiveAppBar() {
                 </Container>
             </AppBar>
         );
-    }
+
 }
 export default ResponsiveAppBar;

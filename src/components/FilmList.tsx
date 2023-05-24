@@ -142,24 +142,11 @@ const FilmList =() => {
     }
 
 
-    if (errorFlag) {
-        return (
-            <div>
 
-                <h1>Users</h1>
-                <div style={{color: "red"}}>
-                    {errorMessage}
-
-                </div>
-
-            </div>
-
-        )
-    } else {
         return (
                 <div>{DisplayFilmList()}</div>
         );
-    }
+
 };
 
 export default FilmList;

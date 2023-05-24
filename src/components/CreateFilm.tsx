@@ -394,20 +394,7 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
 
 
 
-    if (errorFlag) {
-        return (
-            <div>
-
-                <h1>Users</h1>
-                <div style={{color: "red"}}>
-                    {errorMessage}
-
-                </div>
-
-            </div>
-
-        )
-    } else {return (<div>{CreateFilmPage()}</div>)}
+    return (<div>{CreateFilmPage()}</div>)
 
 
 

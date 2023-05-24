@@ -10,7 +10,6 @@ import User from "./User";
 import CSS from "csstype";
 
 
-
 const Login = () => {
 
     const navigate = useNavigate();
@@ -83,22 +82,9 @@ const Login = () => {
             </Container>
         </div>)
     }
-    if (errorFlag) {
-        return (
-            <div>
 
-                <h1>Users</h1>
-                <div style={{color: "red"}}>
-                    {errorMessage}
-
-                </div>
-
-            </div>
-
-        )
-    } else {
         return (<div>{LoginPage()}</div>);
-    }
+
 
 }
 

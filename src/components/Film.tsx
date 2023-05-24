@@ -222,26 +222,13 @@ const EachFilm =() => {
         }
     }
 
-    if (errorFlag) {
-        return (
-            <div>
 
-                <h1>Users</h1>
-                <div style={{color: "red"}}>
-                    {errorMessage}
-
-                </div>
-
-            </div>
-
-        )
-    } else {
         return <Container style={{display: 'inline-block', padding: "10px", verticalAlign: 'middle'}}>
                 <div style={{display: 'inline-block', padding: "10px"}}>
                     <FilmProfile key={oneFilm.filmId + oneFilm.title} film={oneFilm}/>
                 </div>
             <div style={{width:"500px",height:"100px", padding:"20px",display: 'inline-block'}}>
-                { (localStorage.getItem("token") !== "" && checkHasReviewOrNot()) &&
+                { (localStorage.getItem("token") !== "" && checkHasReviewOrNot() && localStorage.getItem("userId") !== oneFilm.directorId.toString()) &&
                     <CreateReview filmId={oneFilm.filmId}/>
                 }
             </div>
@@ -286,7 +273,7 @@ const EachFilm =() => {
                 </div>
 
             </Container>
-    }
+
 }
 
 export default EachFilm;
