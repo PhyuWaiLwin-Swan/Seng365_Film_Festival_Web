@@ -29,6 +29,10 @@ import handleToggle from "./Helper";
 import FilmList from "./FilmList";
 import CreateReview from "./CreateReview";
 
+/**
+ * It is the individual film detail which include the director and review info
+ * @constructor
+ */
 const EachFilm =() => {
     const {id} = useParams();
     // const navigate = useNavigate();
@@ -227,7 +231,7 @@ const EachFilm =() => {
                 <div style={{display: 'inline-block', padding: "10px"}}>
                     <FilmProfile key={oneFilm.filmId + oneFilm.title} film={oneFilm}/>
                 </div>
-            <div style={{width:"500px",height:"100px", padding:"20px",display: 'inline-block'}}>
+            <div style={{width:"500px", padding:"20px",display: 'inline-block'}}>
                 { (localStorage.getItem("token") !== "" && checkHasReviewOrNot() && localStorage.getItem("userId") !== oneFilm.directorId.toString()) &&
                     <CreateReview filmId={oneFilm.filmId}/>
                 }

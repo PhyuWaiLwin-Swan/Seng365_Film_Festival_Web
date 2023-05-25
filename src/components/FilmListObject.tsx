@@ -22,6 +22,11 @@ interface IFilmProps {
 
 }
 
+/**
+ * the card that display in the film list
+ * @param props the film that need to be display
+ * @constructor
+ */
 const FilmListObject = (props: IFilmProps) => {
 
     const [film] = React.useState < Film > (props.film)
@@ -71,7 +76,7 @@ const FilmListObject = (props: IFilmProps) => {
 
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
-                                Release Date : {film.releaseDate}
+                                Release Date : {film.releaseDate.replace("T", " ").slice(0, -5)}
 
                             </Typography>
                             <Typography variant="body2" color="text.secondary">

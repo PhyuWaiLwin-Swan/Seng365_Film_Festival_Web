@@ -21,15 +21,19 @@ import Radio from "@mui/material/Radio";
 interface FilmListProps {
     films: Film[];
 }
+
+/**
+ * The list of the film to be display it will call film list object
+ * for the display
+ * @constructor
+ */
 const FilmList =() => {
     const [films, setFilms] = useState<Film[]>([]);
 
     useEffect(() => {
         const storedFilms = localStorage.getItem('films');
-        console.log(storedFilms)
         if (storedFilms) {
             const parsedFilms = JSON.parse(storedFilms);
-            console.log(parsedFilms)
             setFilms(parsedFilms);
         }
     }, []);

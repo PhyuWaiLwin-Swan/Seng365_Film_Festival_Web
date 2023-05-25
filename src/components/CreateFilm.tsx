@@ -40,8 +40,22 @@ interface CreateFilmProps {
     title: string;
     filmId?: number;
 }
+interface FilmData {
+    title: string;
+    description: string;
+    genreId: number;
+    releaseDate?: string; // Make releaseDate property optional
+    runtime?:number;
+    ageRating?:string;
+}
 
-
+/**
+ * create a new film or edit the film, they are distinguish by the boolean and title.
+ * @param isCreate boolan indicate edit or create
+ * @param title header to display in the form
+ * @param filmId the film id that it is edit.
+ * @constructor
+ */
 const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
 
     const [film, setFilm] = useState({
@@ -64,6 +78,7 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
     const navigate = useNavigate();
     const [value, setValue] = React.useState<Dayjs >();
     const [imageFile, setImageFile] = useState<File | null>(null);
+    const futureDate = dayjs().add(0, 'month');
     React.useEffect(() => {
         if (!isCreate) {
             axios
@@ -97,25 +112,43 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
     }
     const submitCreateFilm = (e: { preventDefault: () => void; }) => {
         e.preventDefault();
-        var runtime;
-        if(Number.isNaN(film.runtime)|| film.runtime === 0 ){
-            runtime = null;
+
+
+        var data: FilmData = {
+            title: film.title,
+            description: film.description,
+            genreId: film.genreId
+        };
+
+        if (film.releaseDate !== "") {
+            const formattedDate = dayjs(film.releaseDate).format('YYYY-MM-DD HH:mm:ss');
+
+            data = {
+                ...data, // Keep existing properties
+                "releaseDate": formattedDate, // Update the releaseDate property
+            };
         }
-        else {
-            runtime = film.runtime
+        if (film.runtime !== 0 && film.runtime !== null) {
+            data = {
+                ...data, // Keep existing properties
+                "runtime": film.runtime // Update the releaseDate property
+            };
         }
+        if (film.ageRating !== "") {
+            data = {
+                ...data, // Keep existing properties
+                "ageRating": film.ageRating // Update the releaseDate property
+            };
+        }
+
+
+
         if (isCreate) {
+            e.preventDefault();
             const url = isCreate ? domain + '/films' : domain + '/films/' + film.filmId;
             e.preventDefault();
 
-            axios.post(domain + "/films", {
-                    "title": film.title,
-                    "description": film.description,
-                    "releaseDate": film.releaseDate,
-                    "genreId": film.genreId,
-                    "runtime": runtime,
-                    "ageRating": film.ageRating
-                }, {
+            axios.post(domain + "/films", data, {
                     headers: {
                         'X-Authorization': localStorage.getItem("token"),
                         'Content-Type': 'application/json'
@@ -125,9 +158,9 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
                 .then((response) => {
                     setErrorFlag(false)
                     setErrorMessage("")
-                    // setFilm((prevFilm) => ({ ...prevFilm, filmId:  response.data.filmId}))
+                    var createdFilmId = response.data.filmId
                     if (imageFile) {
-                        axios.put(domain + "/films/" + response.data.filmId + "/image", imageFile, {
+                        axios.put(domain + "/films/" + createdFilmId + "/image", imageFile, {
                                 headers: {
                                     'X-Authorization': localStorage.getItem("token"),
                                     'Content-Type': 'image/gif'
@@ -137,17 +170,17 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
                             .then((response) => {
                                 setErrorFlag(false)
                                 setErrorMessage("")
-                                navigate('/films/' + response.data.filmId)
+                                navigate('/films/' +createdFilmId )
 
                             }, (error) => {
 
                                 setErrorFlag(true)
                                 setErrorMessage(error.toString())
-                                e.preventDefault();
+
                             })
+                    } else {
+                        navigate('/films/' + createdFilmId)
                     }
-                    console.log(response.data.filmId);
-                    navigate('/films/' + response.data.filmId)
 
                 }, (error) => {
 
@@ -160,9 +193,7 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
         } else {
             e.preventDefault();
             const url = domain + '/films/' + film.filmId;
-            const dateTimeString = film.releaseDate;
-            const parsedDateTime = new Date(dateTimeString);
-            const formattedDateTime = parsedDateTime.toISOString().replace("T", " ").slice(0, -5);
+
             if (imageFile) {
                 axios.put(domain + '/films/' + film.filmId + '/image', imageFile, {
                     headers: {
@@ -178,14 +209,7 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
                         setErrorMessage(error.toString());
                     });
             }
-            axios.patch(url, {
-                title: film.title,
-                description: film.description,
-                releaseDate: formattedDateTime,
-                genreId: film.genreId,
-                runtime: runtime,
-                ageRating: film.ageRating
-            }, {
+            axios.patch(url, data, {
                 headers: {
                     'X-Authorization': localStorage.getItem('token'),
                     'Content-Type': 'application/json'
@@ -194,14 +218,16 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
                 .then((response) => {
                     setErrorFlag(false);
                     setErrorMessage('');
-                    console.log(response.data.filmId);
-                    navigate('/films/' + film.filmId);
+
                 },(error) => {
                     setErrorFlag(true);
                     setErrorMessage(error.toString());
                     const [status, message] = CheckEditFilm(error.response.status);
                     localStorage.setItem("alertStateMessage",message );
                 });
+            if(errorFlag === false) {
+                navigate('/films/' + film.filmId);
+            }
         }
 
 
@@ -250,6 +276,7 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
             }));
         }
     };
+
 
     const CreateFilmPage = () => {
         return <div>
@@ -327,12 +354,13 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
                             style={{ width: '100%' }}
                             id={film.filmId + '_runtime'}
                             label="Run Time"
-                            defaultValue={isCreate ? '' : film.runtime.toString()}
+                            helperText={"value between 1 to 100"}
+                            defaultValue={isCreate ? '' : film.runtime}
                             InputProps={{
                                 readOnly: false,
                             }}
                             variant="standard"
-                            value={film.runtime}
+                            value={film.runtime ? film.runtime:''}
                             onChange={(e) => setFilm((prevFilm) => ({ ...prevFilm, runtime: parseInt(e.target.value) }))}
                         />
                     </div>
@@ -343,14 +371,15 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
                                 className="dateTimeSelecter"
                                 onChange={handleReleaseDateChange}
                                 views={['year', 'month', 'day', 'hours', 'minutes', 'seconds']}
-                                value={dayjs(film.releaseDate) || null}
+                                value={dayjs(film.releaseDate)||null}
+                                minDateTime={dayjs(futureDate.toDate())}
 
                             />
                         </LocalizationProvider>
                     </div>
 
                     <div className="eachBox">
-                        <FormControl fullWidth>
+                        <FormControl fullWidth required>
                             <InputLabel id="select_genre">Genre</InputLabel>
 
                             <Select

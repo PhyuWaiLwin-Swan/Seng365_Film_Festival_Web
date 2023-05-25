@@ -59,13 +59,11 @@ function ResponsiveAppBar() {
 
                 setErrorFlag(false)
                 setErrorMessage("")
-                console.log(response.data)
 
             }, (error) => {
 
                 setErrorFlag(true)
                 setErrorMessage(error.toString())
-                console.log(error)
             })
         window.location.href = `/films`;
     }
@@ -97,8 +95,6 @@ function ResponsiveAppBar() {
     };
     const handleShowMyFilm = async () => {
 
-
-        // console.log(localStorage.getItem("searchString").toString())
         try {
             const [directorResponse, reviewerResponse] = await Promise.all([
                 axios.get(domain + '/films?directorId=' + localStorage.getItem('userId')),

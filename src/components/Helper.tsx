@@ -53,7 +53,6 @@ export const CheckLogInError =  (status:number)=> {
            break
         case 401:
             alertStatemessage = "Not Authorised. Incorrect email/password";
-            console.log(status)
             break
         case 500:
             alertStatemessage = "Internal Server Error";
@@ -200,7 +199,7 @@ export const CheckCreateReview = (status:number): [string, string] => {
             return ["success", "It is successfully created"]
             break;
         case 400:
-            return ["error", "Bad Request. Invalid information"]
+            return ["error", "data/review must NOT have fewer than 1 characters"]
         case 401:
             return ["error", "Unauthorized"]
         case 403:

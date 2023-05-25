@@ -1,6 +1,10 @@
 import {useEffect, useState} from "react";
 import {Alert, AlertTitle} from "@mui/material";
 
+/**
+ * Alert bar content
+ * @constructor
+ */
 function AlertBar() {
     const [alertMessage, setAlertMessage] = useState("");
 
@@ -18,7 +22,7 @@ function AlertBar() {
     return(
         <div>
             {alertMessage && (
-                <Alert severity="info">
+                <Alert severity="error">
                     <AlertTitle>Alert</AlertTitle>
                     <div>
                         {alertMessage} -

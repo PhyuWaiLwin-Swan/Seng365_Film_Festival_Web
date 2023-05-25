@@ -4,10 +4,23 @@ import Button from "@mui/material/Button";
 import axios from "axios";
 import domain from "../domain";
 import {CheckCreateReview, CheckEditFilm} from "./Helper";
+import AlertBar from "./alertBar";
 
 interface filmProps{
     filmId : number
 }
+
+interface  reviewData {
+
+    rating: number,
+    review?: string
+}
+
+/**
+ * create the review for the film if it will reload the page after submit
+ * @param props
+ * @constructor
+ */
 const CreateReview = (props:filmProps)=>{
     const [reviewRating, setReviewRating] = useState(1);
     const [reviewString,setReviewString] = useState ("");
@@ -16,11 +29,14 @@ const CreateReview = (props:filmProps)=>{
 
     const submitCreateReview = (e: { preventDefault: () => void; }) => {
         e.preventDefault();
-        console.log("here submit the review")
-        axios.post(domain + "/films/"+props.filmId+"/reviews", {
-                "rating": reviewRating,
-                "review": reviewString
-            }, {
+        var data:reviewData = {
+            rating:reviewRating,
+        }
+        if(reviewString.trim()!== "") {
+            data = {...data,"review": reviewString}
+        }
+
+        axios.post(domain + "/films/"+props.filmId+"/reviews", data, {
                 headers: {
                     'X-Authorization': localStorage.getItem("token"),
                     'Content-Type': 'application/json'
@@ -31,8 +47,6 @@ const CreateReview = (props:filmProps)=>{
             .then((response) => {
                 setErrorFlag(false)
                 setErrorMessage("")
-                console.log("here submit the review")
-                alert(response.statusText)
                 window.location.reload();
 
 
@@ -54,6 +68,7 @@ const CreateReview = (props:filmProps)=>{
                         id= "review_rating"
                         label="Rating (1 - 10 inclusive)"
                         defaultValue={1}
+                        required
                         InputProps={{
                             readOnly: false,
                         }}
@@ -78,6 +93,8 @@ const CreateReview = (props:filmProps)=>{
                     Submit
                 </Button>
             </form>
+            {errorFlag && <AlertBar></AlertBar>
+            }
         </div>
     )
 }

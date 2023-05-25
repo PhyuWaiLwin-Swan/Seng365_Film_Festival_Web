@@ -56,16 +56,13 @@ const User = () => {
                 setErrorFlag(false)
                 setErrorMessage("")
                 setUser(response.data)
-                console.log(response.data)
 
             }, (error) => {
 
                 setErrorFlag(true)
                 setErrorMessage(error.toString())
-                console.log(error)
             })
 
-        console.log(user)
         const userCardStyles: CSS.Properties = {
             display: "inline-block",
             height: "328px",

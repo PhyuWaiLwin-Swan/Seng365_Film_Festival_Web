@@ -57,8 +57,8 @@ const Search = () => {
 
     const handleSearch = () => {
         let queryParams ="";
-        if (query.q != "") {
-            queryParams = "q="+query.q;
+        if (query.q.trim() != "") {
+            queryParams = "q="+query.q.trim();
         }
         Object.keys(ageStringState).forEach((key) => {
             if (ageStringState[key as keyof typeof ageStringState]) {

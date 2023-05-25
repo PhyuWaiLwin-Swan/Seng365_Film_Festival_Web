@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
 import CSS from "csstype";
-import {CardMedia, Container, TextField, ToggleButton} from "@mui/material";
+import {CardMedia, Container, TextField, ToggleButton, Typography} from "@mui/material";
 import domain from "../domain";
 import GetImage from "./Getimage";
 import FilmList from "./FilmList";
@@ -11,6 +11,12 @@ interface IFilmProps {
     film: Film
 
 }
+
+/**
+ * The detail of the film to be display in the individual film list
+ * @param props
+ * @constructor
+ */
 const FilmProfile = (props: IFilmProps ) => {
     const [film] = React.useState < Film > (props.film)
     const [showSimilarForm,setShowSimilarForm] = React.useState(false)
@@ -36,9 +42,7 @@ const FilmProfile = (props: IFilmProps ) => {
             ]);
 
             const directorFilms = directorResponse.data.films;
-            console.log(directorFilms)
             const genreFilms = reviewerResponse.data.films;
-            console.log(genreFilms)
 
             setErrorFlag(false);
             setErrorMessage("film is not found");
@@ -81,23 +85,19 @@ const FilmProfile = (props: IFilmProps ) => {
             <TextField style={{padding:'8px'}}
                 id={film.filmId+"_releaseDate"}
                 label="Release Date"
-                defaultValue={film.releaseDate}
+                defaultValue={film.releaseDate.replace("T", " ").slice(0, -5)}
                 InputProps={{
                     readOnly: true,
                 }}
                 variant="standard"
             />
-            <TextField style={{padding:'8px'}}
-                id={film.filmId+"_description"}
-                label="Description"
-                defaultValue={film.description}
-                InputProps={{
-                    readOnly: true,
-                }}
-                variant="standard"
-                       multiline
-                       rows={3}
-            />
+
+            <div style={{ textAlign: 'left' ,padding:'8px'}}>
+            <Typography variant="subtitle1" gutterBottom>
+                Description
+            </Typography>
+                <div>{film.description}</div>
+            </div>
             <TextField style={{padding:'8px'}}
                 id={film.filmId+"_rating"}
                 label="Rating

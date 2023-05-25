@@ -5,7 +5,12 @@ import FilmListObject from "./FilmListObject";
 import domain from "../domain";
 import search from "./Search";
 import FilmList from "./FilmList";
+import AlertBar from "./alertBar";
 
+/**
+ * all films page which include the search bar and the film list
+ * @constructor
+ */
 const Films = () => {
     const [films, setFilms] = React.useState<Array<Film>>([]);
     const [errorFlag, setErrorFlag] = React.useState(false);
@@ -29,7 +34,7 @@ const Films = () => {
         } catch (error) {
             setErrorFlag(true);
             // @ts-ignore
-            setErrorMessage(error.toString());
+            setErrorMessage(error);
         }
     };
 
@@ -37,13 +42,14 @@ const Films = () => {
         getFilms();
     }, []); // Removed setFilms from the dependency array
 
-    if (errorFlag) {
-        return <div>error</div>;
-    } else if (films.length > 0) {
-        return <FilmList />;
-    } else {
-        return null; // Render nothing until films data is available
-    }
+
+    return (<div>{errorFlag && <div>{errorMessage}</div>
+
+        }<FilmList />
+
+    </div>
+    );
+
 };
 
 export default Films;

@@ -403,27 +403,6 @@ const Register: React.FC<RegisterProps> = ({ isRegister,userId ,header}) => {
                                                 />
                                             </FormControl>
 
-
-                                        {/*<TextField*/}
-                                        {/*    margin="normal"*/}
-                                        {/*    fullWidth*/}
-                                        {/*    label="Current Password"*/}
-                                        {/*    type="password"*/}
-                                        {/*    inputProps={{ pattern: "^.{6,}$" }}*/}
-                                        {/*    helperText={"At least 6 character long"}*/}
-                                        {/*    onChange={(e) => setUser((prevUser) => ({ ...prevUser, currentPassword: e.target.value }))}*/}
-                                        {/*/>*/}
-
-                                        {/*    <TextField*/}
-                                        {/*        margin="normal"*/}
-                                        {/*        fullWidth*/}
-                                        {/*        label="New Password"*/}
-                                        {/*        type="password"*/}
-                                        {/*        inputProps={{ pattern: "^.{6,}$" }}*/}
-                                        {/*        helperText={"At least 6 character long"}*/}
-                                        {/*        onChange={(e) => setUser((prevUser) => ({ ...prevUser, password: e.target.value }))}*/}
-                                        {/*    />*/}
-
                                         </div>
 
 
