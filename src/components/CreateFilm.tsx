@@ -31,6 +31,8 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import defaultImage from './../default-image.png';
 import './../App.css';
+import {CheckAddNewFilm, CheckEditFilm, CheckRegisterError} from "./Helper";
+import AlertBar from "./alertBar";
 // Inside your component
 
 interface CreateFilmProps {
@@ -93,7 +95,7 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
 
     }
     const submitCreateFilm = (e: { preventDefault: () => void; }) => {
-
+        e.preventDefault();
         if (isCreate) {
             const url = isCreate ? domain + '/films' : domain + '/films/' + film.filmId;
             e.preventDefault();
@@ -115,9 +117,6 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
                 .then((response) => {
                     setErrorFlag(false)
                     setErrorMessage("")
-
-
-
                     // setFilm((prevFilm) => ({ ...prevFilm, filmId:  response.data.filmId}))
                     if (imageFile) {
                         axios.put(domain + "/films/" + response.data.filmId + "/image", imageFile, {
@@ -136,6 +135,7 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
 
                                 setErrorFlag(true)
                                 setErrorMessage(error.toString())
+                                e.preventDefault();
                             })
                     }
                     console.log(response.data.filmId);
@@ -145,16 +145,33 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
 
                     setErrorFlag(true)
                     setErrorMessage(error.toString())
-                    alert("Can not create the film!")
+                    const [status, message] = CheckAddNewFilm(error.response.status);
+                    localStorage.setItem("alertStateMessage",message );
                 })
 
         } else {
-            const url = domain + '/films/' + film.filmId;
             e.preventDefault();
+            const url = domain + '/films/' + film.filmId;
             const dateTimeString = film.releaseDate;
             const parsedDateTime = new Date(dateTimeString);
             const formattedDateTime = parsedDateTime.toISOString().replace("T", " ").slice(0, -5);
-
+            if (imageFile) {
+                axios.put(domain + '/films/' + film.filmId + '/image', imageFile, {
+                    headers: {
+                        'X-Authorization': localStorage.getItem('token'),
+                        'Content-Type': 'image/png'
+                    }
+                })
+                    .then((response) => {
+                        setErrorFlag(false);
+                        setErrorMessage('');
+                        alert("image sending")
+                    }, (error) => {
+                        setErrorFlag(true);
+                        setErrorMessage(error.toString());
+                        alert(error.toString())
+                    });
+            }
             axios.patch(url, {
                 title: film.title,
                 description: film.description,
@@ -171,31 +188,14 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
                 .then((response) => {
                     setErrorFlag(false);
                     setErrorMessage('');
-
-                    if (imageFile) {
-                        axios.put(domain + '/films/' + response.data.filmId + '/image', imageFile, {
-                            headers: {
-                                'X-Authorization': localStorage.getItem('token'),
-                                'Content-Type': 'image/gif'
-                            }
-                        })
-                            .then((response) => {
-                                setErrorFlag(false);
-                                setErrorMessage('');
-                                navigate('/films/' + film.filmId );
-                            })
-                            .catch((error) => {
-                                setErrorFlag(true);
-                                setErrorMessage(error.toString());
-                            });
-                    }
-
                     console.log(response.data.filmId);
                     navigate('/films/' + film.filmId);
                 })
                 .catch((error) => {
                     setErrorFlag(true);
                     setErrorMessage(error.toString());
+                    const [status, message] = CheckEditFilm(error.response.status);
+                    localStorage.setItem("alertStateMessage",message );
                 });
         }
         console.log(localStorage.getItem("token"));
@@ -386,6 +386,8 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
                         Submit
                     </Button>
                 </form>
+                {errorFlag && <AlertBar></AlertBar>
+                }
             </Container>
         </div>
 

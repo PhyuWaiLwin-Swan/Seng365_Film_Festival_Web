@@ -10,7 +10,7 @@ import domain from "../domain";
 import {useNavigate} from "react-router-dom";
 import defaultImage from "../default-image.png";
 import AlertBar from "./alertBar";
-import {CheckLogInError, CheckRegisterError} from "./Helper";
+import {CheckChangeUserDetailError, CheckGetUser, CheckLogInError, CheckRegisterError} from "./Helper";
 
 interface RegisterProps {
     isRegister:boolean;
@@ -24,9 +24,7 @@ const Register: React.FC<RegisterProps> = ({ isRegister,userId ,header}) => {
         token: '',
         firstName: '',
         lastName: '',
-
         email: '',
-
         password: '',
 
         currentPassword: '',
@@ -53,16 +51,17 @@ const Register: React.FC<RegisterProps> = ({ isRegister,userId ,header}) => {
                     setErrorFlag(false)
                     setErrorMessage("")
                     setUser(response.data)
-                    console.log(response.data)
 
                 }, (error) => {
 
                     setErrorFlag(true)
                     setErrorMessage(error.toString())
-                    console.log(error)
+                    const [status, message] = CheckGetUser(error.response.status);
+                    localStorage.setItem("alertStateMessage",message );
+
                 })
         }
-    }, [])
+    }, [isRegisterUser])
 
     const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0]; // Use optional chaining
@@ -75,10 +74,10 @@ const Register: React.FC<RegisterProps> = ({ isRegister,userId ,header}) => {
 
 
     }
-    console.log(imageFile !== null)
     const handleSubmit = (e: { preventDefault: () => void; }) => {
+        e.preventDefault();
         if (isRegisterUser) {
-            e.preventDefault();
+
 
 
             axios.post(domain + "/users/register", {
@@ -119,6 +118,7 @@ const Register: React.FC<RegisterProps> = ({ isRegister,userId ,header}) => {
 
                                         setErrorFlag(true)
                                         setErrorMessage(error.toString())
+                                        CheckLogInError(error.response.status);
                                     })
 
                             })
@@ -156,14 +156,11 @@ const Register: React.FC<RegisterProps> = ({ isRegister,userId ,header}) => {
 
                     setErrorFlag(true)
                     setErrorMessage(error.toString())
-                    console.log(error.toString())
                     const [status, message] = CheckRegisterError(error.response.status);
                     localStorage.setItem("alertStateMessage",message );
                 })
-
         } else {
-            if (imageFile !== null) {
-                alert(domain + '/users/' + user.userId + '/image')
+            if (imageFile) {
 
                 axios.put(domain + '/users/' + localStorage.getItem("userId") + '/image', imageFile, {
                     headers: {
@@ -174,18 +171,17 @@ const Register: React.FC<RegisterProps> = ({ isRegister,userId ,header}) => {
                     .then((response) => {
                         setErrorFlag(false)
                         setErrorMessage("")
-                        alert("image is successfully")
-                        // navigate('/films/' + response.data.filmId)
 
                     }, (error) => {
-                        alert(error.toString())
                         setErrorFlag(true)
                         setErrorMessage(error.toString())
+                        const [status, message] = CheckRegisterError(error.response.status);
+                        localStorage.setItem("alertStateMessage",message );
                     })
-                alert("image is do nothing")
             }
             var data;
             if(user.currentPassword !== ""){
+
                 data = {
                     "firstName": user.firstName,
                     "lastName": user.lastName,
@@ -197,9 +193,10 @@ const Register: React.FC<RegisterProps> = ({ isRegister,userId ,header}) => {
                 data = {
                     "firstName": user.firstName,
                     "lastName": user.lastName,
-                    "email": user.email,
+                    "email": user.email
                 }
             }
+            alert(localStorage.getItem('token'))
             axios.patch(domain + "/users/"+localStorage.getItem("userId"), data, {
                 headers: {
                     'X-Authorization': localStorage.getItem('token'),
@@ -210,6 +207,7 @@ const Register: React.FC<RegisterProps> = ({ isRegister,userId ,header}) => {
                     setErrorFlag(false)
                     setErrorMessage("")
                     setUser(response.data)
+                    navigate('/users/' + localStorage.getItem("userId"))
 
 
 
@@ -217,8 +215,10 @@ const Register: React.FC<RegisterProps> = ({ isRegister,userId ,header}) => {
 
                     setErrorFlag(true)
                     setErrorMessage(error.toString())
+                    const [status, message] = CheckChangeUserDetailError(error.response.status);
+                    localStorage.setItem("alertStateMessage",message );
                 })
-            navigate('/users/' + localStorage.getItem("userId"))
+
         }
     }
     const [imageError, setImageError] = useState(false);
@@ -297,7 +297,7 @@ const Register: React.FC<RegisterProps> = ({ isRegister,userId ,header}) => {
                                         margin="normal"
                                         fullWidth
                                         label="Email"
-                                        type="email"
+                                        // type="email"
                                         inputProps={{ pattern: "^[a-zA-Z0-9.!#$%&'*+/=?^_-]+@[a-zA-Z0-9]+(?:\\.[a-zA-Z0-9-]+)+$" }}
                                         helperText={"example: abc@email.com"}
                                         required
@@ -328,7 +328,7 @@ const Register: React.FC<RegisterProps> = ({ isRegister,userId ,header}) => {
                                             fullWidth
                                             label="Current Password"
                                             type="password"
-                                            inputProps={{ pattern: /^.{6,}$/ }}
+                                            inputProps={{ pattern: "^.{6,}$" }}
                                             helperText={"At least 6 character long"}
                                             onChange={(e) => setUser((prevUser) => ({ ...prevUser, currentPassword: e.target.value }))}
                                         />
@@ -338,7 +338,7 @@ const Register: React.FC<RegisterProps> = ({ isRegister,userId ,header}) => {
                                                 fullWidth
                                                 label="New Password"
                                                 type="password"
-                                                inputProps={{ pattern: /^.{6,}$/ }}
+                                                inputProps={{ pattern: "^.{6,}$" }}
                                                 helperText={"At least 6 character long"}
                                                 onChange={(e) => setUser((prevUser) => ({ ...prevUser, password: e.target.value }))}
                                             />
