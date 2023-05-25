@@ -10,6 +10,7 @@ import User from "./components/User";
 import CreateFilm from "./components/CreateFilm";
 import AllFilms from "./components/AllFilms";
 import films from "./components/Films";
+import AlertBar from "./components/alertBar";
 
 function App() {
   return (
@@ -21,7 +22,6 @@ function App() {
                 <Route path="/films" element={<AllFilms/>}/>
                 <Route path="/films/:id" element={<Film/>}/>
                 <Route path="/users/login" element={<Login/>}/>
-                {/*<Route path="/users/register" element={<Register/>}/>*/}
                 <Route path="/Users/:id" element={<User/>}/>
                 <Route
                     path="/films/create"

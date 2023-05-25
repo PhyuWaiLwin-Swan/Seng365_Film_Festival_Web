@@ -151,6 +151,8 @@ function ResponsiveAppBar() {
                                 display: {xs: 'none', md: 'flex'},
                                 fontFamily: 'monospace',
                                 fontWeight: 700,
+                                zIndex: 100,
+                                cursor:"pointer",
                                 letterSpacing: '.3rem',
                                 color: 'inherit',
                                 textDecoration: 'none',
@@ -158,6 +160,27 @@ function ResponsiveAppBar() {
                         >
                             Film Festival
                         </Typography>
+
+                        <Typography
+
+                            component="a"
+                            onClick={handleDisplayAllFilm}
+                            textAlign="center"
+
+                            sx={{
+                                marginLeft: '20px',
+                                mr: 2,
+                                display: {xs: 'none', md: 'flex'},
+                                fontFamily: 'monospace',
+                                fontWeight: 700,
+                                letterSpacing: '.0rem',
+                                zIndex: 100,
+                                color: 'inherit',
+                                textDecoration: 'none',
+                                '&:hover': {
+                                    cursor: 'pointer',
+                                },
+                            }}>All Films</Typography>
                         {token !== null && (
                             <div style={{display: "flex"}}>
                             <Typography
@@ -201,24 +224,7 @@ function ResponsiveAppBar() {
 
 
                         }
-                        <Typography
 
-                            component="a"
-                            onClick={handleDisplayAllFilm}
-                            textAlign="center"
-                            sx={{
-                                marginLeft: '20px',
-                                mr: 2,
-                                display: {xs: 'none', md: 'flex'},
-                                fontFamily: 'monospace',
-                                fontWeight: 700,
-                                letterSpacing: '.0rem',
-                                color: 'inherit',
-                                textDecoration: 'none',
-                                '&:hover': {
-                                    cursor: 'pointer',
-                                },
-                            }}>All Films</Typography>
 
                         <Box sx={{flexGrow: 1, display: {xs: 'none', md: 'flex'}}}>
 

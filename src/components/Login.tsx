@@ -8,6 +8,8 @@ import domain from "../domain";
 import {useNavigate} from "react-router-dom";
 import User from "./User";
 import CSS from "csstype";
+import {CheckLogInError} from "./Helper";
+import AlertBar from "./alertBar";
 
 
 const Login = () => {
@@ -32,12 +34,14 @@ const Login = () => {
                 setErrorMessage("")
                 localStorage.setItem("token",response.data.token )
                 localStorage.setItem("userId",response.data.userId )
+                CheckLogInError(response.status)
                 navigate("/users/"+response.data.userId)
 
             }, (error) => {
 
                 setErrorFlag(true)
                 setErrorMessage(error.toString())
+                CheckLogInError(error.response.status)
             })
 
 
@@ -77,6 +81,8 @@ const Login = () => {
                     />
                     <Button type="submit" style={{height: "55px"}} variant="contained">Log in</Button>
                     </form>
+                    {errorFlag && <AlertBar></AlertBar>
+                    }
                 </Container>
                 </Card>
             </Container>
