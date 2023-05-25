@@ -3,6 +3,7 @@ import React, {useState} from "react";
 import Button from "@mui/material/Button";
 import axios from "axios";
 import domain from "../domain";
+import {CheckCreateReview, CheckEditFilm} from "./Helper";
 
 interface filmProps{
     filmId : number
@@ -39,7 +40,8 @@ const CreateReview = (props:filmProps)=>{
 
             setErrorFlag(true)
             setErrorMessage(error.toString())
-                alert(error.toString())
+                const [status, message] = CheckCreateReview(error.response.status);
+                localStorage.setItem("alertStateMessage",message );
         })}
 
     return (

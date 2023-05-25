@@ -213,4 +213,4 @@ export const CheckCreateReview = (status:number): [string, string] => {
             return ["error", "Unknow Error"]
     }
 }
-export default {MyComponent,CheckGetUser,handleToggle,removeDuplicateFilms,CheckLogInError,CheckChangeUserDetailError,CheckEditFilm,CheckRegisterError};
+export default {MyComponent,CheckGetUser,CheckCreateReview,handleToggle,removeDuplicateFilms,CheckLogInError,CheckChangeUserDetailError,CheckEditFilm,CheckRegisterError};

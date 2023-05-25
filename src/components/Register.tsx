@@ -1,7 +1,16 @@
 
 import React, { useState } from 'react';
 // import { makeStyles } from "@mui/material/styles";
-import {Card, CardMedia, TextField} from "@mui/material";
+import {
+    Card,
+    CardMedia,
+    FormControl,
+    IconButton,
+    InputAdornment,
+    InputLabel,
+    OutlinedInput,
+    TextField
+} from "@mui/material";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 // import axios from "axios/index";
@@ -11,6 +20,7 @@ import {useNavigate} from "react-router-dom";
 import defaultImage from "../default-image.png";
 import AlertBar from "./alertBar";
 import {CheckChangeUserDetailError, CheckGetUser, CheckLogInError, CheckRegisterError} from "./Helper";
+import {Visibility, VisibilityOff} from "@mui/icons-material";
 
 interface RegisterProps {
     isRegister:boolean;
@@ -35,7 +45,13 @@ const Register: React.FC<RegisterProps> = ({ isRegister,userId ,header}) => {
     const [errorFlag, setErrorFlag] = React.useState(false)
     const [errorMessage, setErrorMessage] = React.useState("")
     const [imageFile, setImageFile] = useState<File | null>(null);
+    const [showPassword, setShowPassword] = React.useState(false);
 
+    const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+    const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
+    };
 
     React.useEffect(() => {
 
@@ -196,7 +212,6 @@ const Register: React.FC<RegisterProps> = ({ isRegister,userId ,header}) => {
                     "email": user.email
                 }
             }
-            alert(localStorage.getItem('token'))
             axios.patch(domain + "/users/"+localStorage.getItem("userId"), data, {
                 headers: {
                     'X-Authorization': localStorage.getItem('token'),
@@ -309,39 +324,105 @@ const Register: React.FC<RegisterProps> = ({ isRegister,userId ,header}) => {
                                         onChange={(e) => setUser((prevUser) => ({ ...prevUser, email: e.target.value }))}
                                     />
                                     {isRegister &&
-                                        <TextField
-                                        margin="normal"
-                                        fullWidth
-                                        label="Password"
-                                        type="password"
-                                        inputProps={{ pattern: "^.{6,}$" }}
-                                        helperText={"At least 6 character long"}
-                                        required
-                                        value={user.password}
+                                        <div>
+
+                                        <FormControl margin="normal" fullWidth variant="outlined">
+                                        <InputLabel htmlFor="outlined-adornment-password">Password *</InputLabel>
+                                        <OutlinedInput
+                                        id="outlined-adornment-password"
+                                        type={showPassword ? 'text' : 'password'}
+                                        endAdornment={
+                                        <InputAdornment position="end">
+                                        <IconButton
+                                        aria-label="toggle password visibility"
+                                        onClick={handleClickShowPassword}
+                                        onMouseDown={handleMouseDownPassword}
+                                        edge="end"
+                                        >
+                                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                                        </IconButton>
+                                        </InputAdornment>
+                                    }
+                                        label="Password *"
                                         onChange={(e) => setUser((prevUser) => ({ ...prevUser, password: e.target.value }))}
-                                    />
+                                        />
+                                        </FormControl>
+
+
+
+                                        </div>
+
+
+
+
+
                                     }
                                     {!isRegister &&
                                         <div>
-                                        <TextField
-                                            margin="normal"
-                                            fullWidth
-                                            label="Current Password"
-                                            type="password"
-                                            inputProps={{ pattern: "^.{6,}$" }}
-                                            helperText={"At least 6 character long"}
-                                            onChange={(e) => setUser((prevUser) => ({ ...prevUser, currentPassword: e.target.value }))}
-                                        />
+                                            <FormControl margin="normal" fullWidth variant="outlined">
+                                                <InputLabel htmlFor="outlined-adornment-password">Current Password *</InputLabel>
+                                                <OutlinedInput
+                                                    id="outlined-adornment-password"
+                                                    type={showPassword ? 'text' : 'password'}
+                                                    endAdornment={
+                                                        <InputAdornment position="end">
+                                                            <IconButton
+                                                                aria-label="toggle password visibility"
+                                                                onClick={handleClickShowPassword}
+                                                                onMouseDown={handleMouseDownPassword}
+                                                                edge="end"
+                                                            >
+                                                                {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                            </IconButton>
+                                                        </InputAdornment>
+                                                    }
+                                                    label="Password"
+                                                    onChange={(e) => setUser((prevUser) => ({ ...prevUser, currentPassword: e.target.value }))}
+                                                />
+                                            </FormControl>
 
-                                            <TextField
-                                                margin="normal"
-                                                fullWidth
-                                                label="New Password"
-                                                type="password"
-                                                inputProps={{ pattern: "^.{6,}$" }}
-                                                helperText={"At least 6 character long"}
-                                                onChange={(e) => setUser((prevUser) => ({ ...prevUser, password: e.target.value }))}
-                                            />
+                                            <FormControl margin="normal" fullWidth variant="outlined">
+                                                <InputLabel htmlFor="outlined-adornment-password"> New Password *</InputLabel>
+                                                <OutlinedInput
+                                                    id="outlined-adornment-password"
+                                                    type={showPassword ? 'text' : 'password'}
+                                                    endAdornment={
+                                                        <InputAdornment position="end">
+                                                            <IconButton
+                                                                aria-label="toggle password visibility"
+                                                                onClick={handleClickShowPassword}
+                                                                onMouseDown={handleMouseDownPassword}
+                                                                edge="end"
+                                                            >
+                                                                {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                            </IconButton>
+                                                        </InputAdornment>
+                                                    }
+                                                    label="Password *"
+                                                    onChange={(e) => setUser((prevUser) => ({ ...prevUser, password: e.target.value }))}
+                                                />
+                                            </FormControl>
+
+
+                                        {/*<TextField*/}
+                                        {/*    margin="normal"*/}
+                                        {/*    fullWidth*/}
+                                        {/*    label="Current Password"*/}
+                                        {/*    type="password"*/}
+                                        {/*    inputProps={{ pattern: "^.{6,}$" }}*/}
+                                        {/*    helperText={"At least 6 character long"}*/}
+                                        {/*    onChange={(e) => setUser((prevUser) => ({ ...prevUser, currentPassword: e.target.value }))}*/}
+                                        {/*/>*/}
+
+                                        {/*    <TextField*/}
+                                        {/*        margin="normal"*/}
+                                        {/*        fullWidth*/}
+                                        {/*        label="New Password"*/}
+                                        {/*        type="password"*/}
+                                        {/*        inputProps={{ pattern: "^.{6,}$" }}*/}
+                                        {/*        helperText={"At least 6 character long"}*/}
+                                        {/*        onChange={(e) => setUser((prevUser) => ({ ...prevUser, password: e.target.value }))}*/}
+                                        {/*    />*/}
 
                                         </div>
 

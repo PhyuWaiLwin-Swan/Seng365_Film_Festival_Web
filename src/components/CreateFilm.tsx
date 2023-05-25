@@ -72,15 +72,16 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
                     setErrorFlag(false);
                     setErrorMessage("");
                     setFilm(response.data);
-                })
-                .catch((error) => {
-                    setErrorFlag(true);
-                    setErrorMessage(error.toString());
+                }, (error) => {
 
-                });
+                    setErrorFlag(true)
+                    setErrorMessage(error.toString())
+                })
         }
     }, [filmId]);
+    const [imageError, setImageError] = useState(false);
 
+    const imageSrc = imageError ? defaultImage : `${domain}/${"films"}/${film.filmId}/image`;
 
 
     const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -96,6 +97,13 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
     }
     const submitCreateFilm = (e: { preventDefault: () => void; }) => {
         e.preventDefault();
+        var runtime;
+        if(Number.isNaN(film.runtime)|| film.runtime === 0 ){
+            runtime = null;
+        }
+        else {
+            runtime = film.runtime
+        }
         if (isCreate) {
             const url = isCreate ? domain + '/films' : domain + '/films/' + film.filmId;
             e.preventDefault();
@@ -105,7 +113,7 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
                     "description": film.description,
                     "releaseDate": film.releaseDate,
                     "genreId": film.genreId,
-                    "runtime": film.runtime,
+                    "runtime": runtime,
                     "ageRating": film.ageRating
                 }, {
                     headers: {
@@ -165,11 +173,9 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
                     .then((response) => {
                         setErrorFlag(false);
                         setErrorMessage('');
-                        alert("image sending")
                     }, (error) => {
                         setErrorFlag(true);
                         setErrorMessage(error.toString());
-                        alert(error.toString())
                     });
             }
             axios.patch(url, {
@@ -177,7 +183,7 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
                 description: film.description,
                 releaseDate: formattedDateTime,
                 genreId: film.genreId,
-                runtime: film.runtime,
+                runtime: runtime,
                 ageRating: film.ageRating
             }, {
                 headers: {
@@ -190,15 +196,13 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
                     setErrorMessage('');
                     console.log(response.data.filmId);
                     navigate('/films/' + film.filmId);
-                })
-                .catch((error) => {
+                },(error) => {
                     setErrorFlag(true);
                     setErrorMessage(error.toString());
                     const [status, message] = CheckEditFilm(error.response.status);
                     localStorage.setItem("alertStateMessage",message );
                 });
         }
-        console.log(localStorage.getItem("token"));
 
 
     }
@@ -269,8 +273,9 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
                             <CardMedia
                                 className="app-img"
                                 component="img"
-                                image={imageFile ? URL.createObjectURL(imageFile) : defaultImage}
-                                alt={imageFile ? 'Uploaded' : 'Default'}
+                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                image={imageFile ? URL.createObjectURL(imageFile) : imageSrc ||defaultImage}
+                                onError={() => setImageError(true)}
                             />
                         </Card>
                     </div>
@@ -294,6 +299,7 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
                             InputProps={{
                                 readOnly: false,
                             }}
+                            required
                             variant="standard"
                             value={film.title}
                             onChange={(e) => setFilm((prevFilm) => ({ ...prevFilm, title: e.target.value }))}
@@ -305,6 +311,7 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
                             style={{ width: '100%' }}
                             id={film.filmId + '_description'}
                             label="Description"
+                            required
                             defaultValue={isCreate ? '' : film.description} // Handle the case when description is null
                             InputProps={{
                                 readOnly: false,
@@ -351,6 +358,7 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
                                 id="genre"
                                 label="Genre"
                                 value={film.genreId.toString() || ''}
+                                required
                                 onChange={(e) => setFilm((prevFilm) => ({ ...prevFilm, genreId: parseInt(e.target.value as string) }))}
                             >
                                 {genre.map(({ genreId, name }) => (
