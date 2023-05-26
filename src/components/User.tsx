@@ -86,7 +86,10 @@ const User = () => {
                         Email : {user.email}
                     </Typography>
                     <Typography gutterBottom variant="h6" component="div">
-                        Full Name : {user.firstName} {user.lastName}
+                        First Name : {user.firstName}
+                    </Typography>
+                    <Typography gutterBottom variant="h6" component="div">
+                        Last Name : {user.lastName}
                     </Typography>
                 </CardContent>
                 <div style={{padding:"20px"}}>

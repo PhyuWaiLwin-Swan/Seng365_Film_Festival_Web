@@ -1,7 +1,17 @@
 import React from "react";
-import {Cabin, Delete, Edit} from "@mui/icons-material";
+import {Cabin, Delete, Edit, Visibility, VisibilityOff} from "@mui/icons-material";
 import Container from "@mui/material/Container";
-import {Card, CardActions, CardContent, CardMedia, IconButton, Paper, TextField, Typography} from "@mui/material";
+import {
+    Card,
+    CardActions,
+    CardContent,
+    CardMedia,
+    FormControl,
+    IconButton, InputAdornment, InputLabel, OutlinedInput,
+    Paper,
+    TextField,
+    Typography
+} from "@mui/material";
 import Button from "@mui/material/Button";
 import axios from "axios";
 import domain from "../domain";
@@ -19,6 +29,7 @@ const Login = () => {
     const [password,setPassword] = React.useState("");
     const [errorFlag, setErrorFlag] = React.useState(false)
     const [errorMessage, setErrorMessage] = React.useState("")
+    const [showPassword, setShowPassword] = React.useState(false);
 
     const handleSubmit = (e: { preventDefault: () => void; }) => {
         e.preventDefault();
@@ -47,7 +58,11 @@ const Login = () => {
 
 
     };
+    const handleClickShowPassword = () => setShowPassword((show) => !show);
 
+    const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
+    };
     const LoginPage = () =>{
         return (<div>
             <Container style={{ position: 'fixed', top: 0, bottom: 0, left: 0, right: 0, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -61,6 +76,8 @@ const Login = () => {
                         margin="normal"
                         required
                         fullWidth
+                        inputProps={{ pattern: "^[a-zA-Z0-9.!#$%&'*+/=?^_-]+@[a-zA-Z0-9]+(?:\\.[a-zA-Z0-9-]+)+$" }}
+                        helperText={"example: abc@email.com"}
                         id="email"
                         label="Email Address"
                         name="email"
@@ -68,17 +85,36 @@ const Login = () => {
                         autoFocus
                         onChange={(e: { target: { value: React.SetStateAction<string>; }; }) => setEmail(e.target.value)}
                     />
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        name="password"
-                        label="Password"
-                        type="password"
-                        id="password"
-                        autoComplete="current-password"
-                        onChange={(e: { target: { value: React.SetStateAction<string>; }; }) => setPassword(e.target.value)}
-                    />
+                            <div>
+
+                                <FormControl margin="normal" fullWidth variant="outlined">
+                                    <InputLabel htmlFor="outlined-adornment-password">Password *</InputLabel>
+                                    <OutlinedInput
+                                        id="outlined-adornment-password"
+                                        type={showPassword ? 'text' : 'password'}
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    aria-label="toggle password visibility"
+                                                    onClick={handleClickShowPassword}
+                                                    onMouseDown={handleMouseDownPassword}
+                                                    edge="end"
+                                                >
+                                                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        }
+                                        label="Password *"
+                                        onChange={(e: { target: { value: React.SetStateAction<string>; }; }) => setPassword(e.target.value)}
+                                        required
+                                        inputProps={{
+                                            pattern: '.{6,}',
+                                            title: 'Password must be at least 6 characters long',
+                                        }}
+                                    />
+                                </FormControl>
+                            </div>
+
                     <Button type="submit" style={{height: "55px"}} variant="contained">Log in</Button>
                     </form>
                     {errorFlag && <AlertBar></AlertBar>

@@ -103,10 +103,13 @@ const EachFilm =() => {
         setOpenEditDialog(false);
     };
     const handleEditDialogOpen = () => {
-        //////////////////////////////////////////////////////////////////////////////////////
-        setOpenEditDialog(true);
-        localStorage.setItem("editFilmId",oneFilm.filmId.toString());
-        window.location.href = "/edit";
+        if(reviews.length >0) {
+            alert("Someone has already review it. Unable to edit the film detail")
+        } else {
+            setOpenEditDialog(true);
+            localStorage.setItem("editFilmId", oneFilm.filmId.toString());
+            window.location.href = "/edit";
+        }
     };
     const deleteFilm = () => {
         axios.delete(domain + '/films/' + oneFilm.filmId,
@@ -244,15 +247,6 @@ const EachFilm =() => {
                     </div>
                 </div>
 
-                {/*{localStorage.getItem("token" ) === null  &&*/}
-                {/*    <Button style={{height: "55px", width: "85px", paddingLeft: "10px",paddingRight: "10px"}}*/}
-                {/*            variant="contained"*/}
-                {/*            onClick={reviewFilmAlert}>*/}
-                {/*        Review a film*/}
-                {/*    </Button>*/}
-                {/*}*/}
-
-
             <div style={{width:"500px", padding:"20px",display: 'inline-block' }}>
                 { (localStorage.getItem("token") !== null && checkHasReviewOrNot() && localStorage.getItem("userId") !== oneFilm.directorId.toString()) &&
                     <CreateReview filmId={oneFilm.filmId}/>
@@ -269,11 +263,13 @@ const EachFilm =() => {
                         <div>{DeleteDialog("Delete Film", "Are you sure that you want to delete a film?")}</div>
                     </div>
                         <div>
+
                             <Button style={{height: "55px", width: "85px", paddingLeft: "10px", paddingRight: "10px"}}
                                     variant="contained"
                                     onClick={handleEditDialogOpen}>
                                 Edit
                             </Button>
+
                         </div>
 
                     </Container>}

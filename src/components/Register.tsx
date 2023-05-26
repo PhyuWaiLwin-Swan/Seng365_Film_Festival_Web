@@ -372,11 +372,13 @@ const Register: React.FC<RegisterProps> = ({ isRegister,userId ,header}) => {
                                     }
                                         label="Password *"
                                         onChange={(e) => setUser((prevUser) => ({ ...prevUser, password: e.target.value }))}
+                                        required
+                                        inputProps={{
+                                            pattern: '.{6,}',
+                                            title: 'Password must be at least 6 characters long',
+                                        }}
                                         />
                                         </FormControl>
-
-
-
                                         </div>
 
 
@@ -405,6 +407,10 @@ const Register: React.FC<RegisterProps> = ({ isRegister,userId ,header}) => {
                                                     }
                                                     label="Password"
                                                     onChange={(e) => setUser((prevUser) => ({ ...prevUser, currentPassword: e.target.value }))}
+                                                    inputProps={{
+                                                        pattern: '.{6,}',
+                                                        title: 'Password must be at least 6 characters long',
+                                                    }}
                                                 />
                                             </FormControl>
 
@@ -427,6 +433,10 @@ const Register: React.FC<RegisterProps> = ({ isRegister,userId ,header}) => {
                                                     }
                                                     label="Password *"
                                                     onChange={(e) => setUser((prevUser) => ({ ...prevUser, password: e.target.value }))}
+                                                    inputProps={{
+                                                        pattern: '.{6,}',
+                                                        title: 'Password must be at least 6 characters long',
+                                                    }}
                                                 />
                                             </FormControl>
 

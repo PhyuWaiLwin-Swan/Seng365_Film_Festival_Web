@@ -112,14 +112,12 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
     }
     const submitCreateFilm = (e: { preventDefault: () => void; }) => {
         e.preventDefault();
-
         var data: FilmData = {
             title: film.title,
             description: film.description,
             genreId: film.genreId
         };
-
-        if (film.releaseDate !== "" && dayjs(film.releaseDate) > futureDate) {
+        if (film.releaseDate !== "" && dayjs(film.releaseDate) > dayjs().subtract(1,"day")) {
             const formattedDate = dayjs(film.releaseDate).format('YYYY-MM-DD HH:mm:ss');
 
             data = {
@@ -127,7 +125,7 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
                 "releaseDate": formattedDate, // Update the releaseDate property
             };
         }
-        if (film.runtime !== 0 && film.runtime !== null) {
+        if (film.runtime !== 0 && film.runtime !== null && ! isNaN(film.runtime)) {
             data = {
                 ...data, // Keep existing properties
                 "runtime": film.runtime // Update the releaseDate property
@@ -140,6 +138,7 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
             };
         }
 
+        e.preventDefault();
 
 
         if (isCreate) {
@@ -379,7 +378,7 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
                             id={film.filmId + '_runtime'}
                             label="Run Time"
                             helperText={"value between 1 to 300"}
-                            defaultValue={isCreate ? '' : film.runtime}
+                            defaultValue={isCreate ? '' : (film.runtime === 0? "":film.runtime)}
                             InputProps={{
                                 readOnly: false,
                                 inputProps: {
@@ -388,10 +387,13 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
                                 },
                             }}
                             variant="standard"
-                            value={film.runtime ? film.runtime:''}
-                            onChange={(e) => setFilm((prevFilm) => ({ ...prevFilm, runtime: parseInt(e.target.value) }))}
+                            value={film.runtime ? film.runtime:null}
+                            onChange={(e) => setFilm((prevFilm) => ({
+                                ...prevFilm, runtime: parseInt(e.target.value) }))}
                         />
                     </div>
+
+                    {(isCreate) &&
 
                     <div className="eachBox">
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -405,6 +407,41 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
                             />
                         </LocalizationProvider>
                     </div>
+                    }
+
+                    {(!isCreate) &&
+                        <div>
+                    {dayjs(film.releaseDate) >= dayjs().subtract(1,"day") &&
+                        <div className="eachBox">
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DateTimePicker
+                        className="dateTimeSelecter"
+                        onChange={handleReleaseDateChange}
+                        views={['year', 'month', 'day', 'hours', 'minutes', 'seconds']}
+                        value={dayjs(film.releaseDate)||null}
+                        minDateTime={dayjs(futureDate.toDate())}
+                        disabled={dayjs(film.releaseDate).isBefore(dayjs().subtract(1, 'day'))}
+                        />
+                        </LocalizationProvider>
+                        </div>
+                    }
+                    {dayjs(film.releaseDate) < dayjs().subtract(1,"day") &&
+
+                        <TextField
+                        style={{width: '100%'}}
+                        id={film.filmId + '_releaseDate'}
+                        label="Release Date"
+                        required
+                        defaultValue={isCreate ? '' : film.releaseDate} // Handle the case when description is null
+                        InputProps={{
+                        readOnly: false,
+                    }}
+                        variant="standard"
+                        value={film.releaseDate.replace("T", " ").slice(0, -5)}
+                        />
+                    }
+                        </div>
+                    }
 
                     <div className="eachBox">
                         <FormControl fullWidth >

@@ -41,7 +41,6 @@ const Films = () => {
     };
 
     useEffect(() => {
-    console.log("Hello")
         getFilms();
     }, []); // Removed setFilms from the dependency array
 
