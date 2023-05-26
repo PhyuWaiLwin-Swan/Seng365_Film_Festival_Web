@@ -426,7 +426,7 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
                         </div>
                     }
                     {dayjs(film.releaseDate) < dayjs().subtract(1,"day") &&
-
+                        <div className="eachBox">
                         <TextField
                         style={{width: '100%'}}
                         id={film.filmId + '_releaseDate'}
@@ -439,6 +439,7 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
                         variant="standard"
                         value={film.releaseDate.replace("T", " ").slice(0, -5)}
                         />
+                        </div>
                     }
                         </div>
                     }
