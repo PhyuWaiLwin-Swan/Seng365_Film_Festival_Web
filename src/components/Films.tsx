@@ -15,10 +15,12 @@ const Films = () => {
     const [films, setFilms] = React.useState<Array<Film>>([]);
     const [errorFlag, setErrorFlag] = React.useState(false);
     const [errorMessage, setErrorMessage] = React.useState("");
+    const [loadImage,setLoadImage] = React.useState(true);
 
     const getFilms = async () => {
+
         let requestLink;
-        if (localStorage.getItem("searchString") != null) {
+        if (localStorage.getItem("searchString") !== null) {
             requestLink = domain + "/films" + localStorage.getItem("searchString");
         } else {
             requestLink = domain + "/films";
@@ -39,13 +41,14 @@ const Films = () => {
     };
 
     useEffect(() => {
+    console.log("Hello")
         getFilms();
     }, []); // Removed setFilms from the dependency array
 
 
     return (<div>{errorFlag && <div>{errorMessage}</div>
 
-        }<FilmList />
+        }<FilmList key={new Date().toISOString()} />
 
     </div>
     );

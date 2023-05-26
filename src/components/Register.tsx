@@ -236,6 +236,32 @@ const Register: React.FC<RegisterProps> = ({ isRegister,userId ,header}) => {
 
         }
     }
+    const handleRemoveImageSelected = () => {
+        axios.delete(domain + '/users/' + localStorage.getItem("userId")+"/image",
+
+            {
+                headers: {
+                    'X-Authorization': localStorage.getItem("token")
+                }
+            }
+
+        )
+
+            .then((response) => {
+
+                localStorage.setItem("alertStateMessage", "Delete the image successfully");
+                window.location.reload()
+
+
+            }, (error) => {
+
+                setErrorFlag(true)
+                setErrorMessage(error.toString())
+                localStorage.setItem("alertStateMessage", "Error ocuur when delete image");
+
+            })
+
+    }
     const [imageError, setImageError] = useState(false);
 
     const imageSrc = imageError ? defaultImage : `${domain}/${"users"}/${localStorage.getItem("userId")}/image`;
@@ -266,6 +292,10 @@ const Register: React.FC<RegisterProps> = ({ isRegister,userId ,header}) => {
                                                 onError={() => setImageError(true)}
                                             />
                                         </Card>
+
+                                        {!imageError &&
+                                            <Button style={{height: "55px"}} variant="contained" onClick={handleRemoveImageSelected}>Remove</Button>
+                                        }
                                     </div>
 
                                     <div style={{ padding: '10px' }}>
@@ -291,8 +321,6 @@ const Register: React.FC<RegisterProps> = ({ isRegister,userId ,header}) => {
                                         value={user.firstName}
                                         onChange={(e) => setUser((prevUser) => ({ ...prevUser, firstName: e.target.value }))}
                                     />
-
-                                    <div>{user.firstName}</div>
                                     <TextField
                                         margin="normal"
                                         fullWidth
@@ -312,7 +340,6 @@ const Register: React.FC<RegisterProps> = ({ isRegister,userId ,header}) => {
                                         margin="normal"
                                         fullWidth
                                         label="Email"
-                                        // type="email"
                                         inputProps={{ pattern: "^[a-zA-Z0-9.!#$%&'*+/=?^_-]+@[a-zA-Z0-9]+(?:\\.[a-zA-Z0-9-]+)+$" }}
                                         helperText={"example: abc@email.com"}
                                         required

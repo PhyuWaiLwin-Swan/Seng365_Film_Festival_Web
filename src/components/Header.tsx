@@ -48,7 +48,7 @@ function ResponsiveAppBar() {
         window.location.href = `/users/login`;
     }
     const handleLoadOut = () => {
-        localStorage.clear()
+
         axios.post(domain + "/users/logout", {
             headers: {
                 'X-Authorization': token
@@ -65,7 +65,9 @@ function ResponsiveAppBar() {
                 setErrorFlag(true)
                 setErrorMessage(error.toString())
             })
+        window.location.reload()
         window.location.href = `/films`;
+        localStorage.removeItem("token")
     }
 
     const handleLoadRegisterPage = () => {
@@ -125,6 +127,7 @@ function ResponsiveAppBar() {
         const handleDisplayAllFilm = () => {
         let queryParams = "";
         localStorage.setItem("searchString", queryParams)
+            window.location.reload()
         window.location.href = `/films`
 
     }

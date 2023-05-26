@@ -31,7 +31,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import defaultImage from './../default-image.png';
 import './../App.css';
-import {CheckAddNewFilm, CheckEditFilm, CheckRegisterError} from "./Helper";
+import {CheckAddNewFilm, CheckEditFilm, CheckImageFile, CheckRegisterError} from "./Helper";
 import AlertBar from "./alertBar";
 // Inside your component
 
@@ -105,7 +105,7 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
             setImageFile(file);
         }
     };
-    const handleRemoveImage =  () => {
+    const handleRemoveImage = () => {
         setImageFile(null);
 
 
@@ -113,14 +113,13 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
     const submitCreateFilm = (e: { preventDefault: () => void; }) => {
         e.preventDefault();
 
-
         var data: FilmData = {
             title: film.title,
             description: film.description,
             genreId: film.genreId
         };
 
-        if (film.releaseDate !== "") {
+        if (film.releaseDate !== "" && dayjs(film.releaseDate) > futureDate) {
             const formattedDate = dayjs(film.releaseDate).format('YYYY-MM-DD HH:mm:ss');
 
             data = {
@@ -147,49 +146,76 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
             e.preventDefault();
             const url = isCreate ? domain + '/films' : domain + '/films/' + film.filmId;
             e.preventDefault();
-
-            axios.post(domain + "/films", data, {
-                    headers: {
-                        'X-Authorization': localStorage.getItem("token"),
-                        'Content-Type': 'application/json'
+            if(imageFile) {
+                axios.post(domain + "/films", data, {
+                        headers: {
+                            'X-Authorization': localStorage.getItem("token"),
+                            'Content-Type': 'application/json'
+                        }
                     }
-                }
-            )
-                .then((response) => {
-                    setErrorFlag(false)
-                    setErrorMessage("")
-                    var createdFilmId = response.data.filmId
-                    if (imageFile) {
-                        axios.put(domain + "/films/" + createdFilmId + "/image", imageFile, {
-                                headers: {
-                                    'X-Authorization': localStorage.getItem("token"),
-                                    'Content-Type': 'image/gif'
+                )
+                    .then((response) => {
+                        setErrorFlag(false)
+                        setErrorMessage("")
+                        var createdFilmId = response.data.filmId
+                            axios.put(domain + "/films/" + createdFilmId + "/image", imageFile, {
+                                    headers: {
+                                        'X-Authorization': localStorage.getItem("token"),
+                                        'Content-Type': imageFile.type
+                                    }
                                 }
-                            }
-                        )
-                            .then((response) => {
-                                setErrorFlag(false)
-                                setErrorMessage("")
-                                navigate('/films/' +createdFilmId )
+                            )
+                                .then((response) => {
+                                    setErrorFlag(false)
+                                    setErrorMessage("")
+                                    navigate('/films/' + createdFilmId)
 
-                            }, (error) => {
+                                }, (error) => {
 
-                                setErrorFlag(true)
-                                setErrorMessage(error.toString())
+                                    setErrorFlag(true)
+                                    setErrorMessage(error.toString())
+                                    const [status, message] = CheckImageFile(error.response.status);
+                                    localStorage.setItem("alertStateMessage", message);
 
-                            })
-                    } else {
-                        navigate('/films/' + createdFilmId)
-                    }
+                                    axios.delete(domain + '/films/' + createdFilmId,
 
-                }, (error) => {
+                                        {
+                                            headers: {
+                                                'X-Authorization': localStorage.getItem("token")
+                                            }
+                                        }
 
-                    setErrorFlag(true)
-                    setErrorMessage(error.toString())
-                    const [status, message] = CheckAddNewFilm(error.response.status);
-                    localStorage.setItem("alertStateMessage",message );
-                })
+                                    )
 
+                                        .then((response) => {
+
+                                            localStorage.setItem("alertStateMessage", "Fail to create image! please check the image type or upload an image. Create film also fail");
+
+
+                                        }, (error) => {
+
+                                            setErrorFlag(true)
+                                            setErrorMessage(error.toString())
+                                            localStorage.setItem("alertStateMessage", "Error ocuur when create film is unsuccessful");
+                                        })
+
+
+
+
+
+                                })
+
+                    }, (error) => {
+
+                        setErrorFlag(true)
+                        setErrorMessage(error.toString())
+                        const [status, message] = CheckAddNewFilm(error.response.status);
+                        localStorage.setItem("alertStateMessage", message);
+                    })
+            } else {
+                setErrorFlag(true)
+                localStorage.setItem("alertStateMessage", "Please select an image to create a fim");
+            }
         } else {
             e.preventDefault();
             const url = domain + '/films/' + film.filmId;
@@ -218,6 +244,7 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
                 .then((response) => {
                     setErrorFlag(false);
                     setErrorMessage('');
+                    navigate('/films/' + film.filmId);
 
                 },(error) => {
                     setErrorFlag(true);
@@ -225,9 +252,6 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
                     const [status, message] = CheckEditFilm(error.response.status);
                     localStorage.setItem("alertStateMessage",message );
                 });
-            if(errorFlag === false) {
-                navigate('/films/' + film.filmId);
-            }
         }
 
 
@@ -354,10 +378,14 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
                             style={{ width: '100%' }}
                             id={film.filmId + '_runtime'}
                             label="Run Time"
-                            helperText={"value between 1 to 100"}
+                            helperText={"value between 1 to 300"}
                             defaultValue={isCreate ? '' : film.runtime}
                             InputProps={{
                                 readOnly: false,
+                                inputProps: {
+                                    pattern: "^([1-9]|[1-9][0-9]|[12][0-9]{2}|300)$",
+                                    title: "Please enter a value between 1 and 300",
+                                },
                             }}
                             variant="standard"
                             value={film.runtime ? film.runtime:''}
@@ -373,21 +401,21 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
                                 views={['year', 'month', 'day', 'hours', 'minutes', 'seconds']}
                                 value={dayjs(film.releaseDate)||null}
                                 minDateTime={dayjs(futureDate.toDate())}
-
+                                disabled={dayjs(film.releaseDate).isBefore(dayjs().subtract(1, 'day'))}
                             />
                         </LocalizationProvider>
                     </div>
 
                     <div className="eachBox">
-                        <FormControl fullWidth required>
+                        <FormControl fullWidth >
                             <InputLabel id="select_genre">Genre</InputLabel>
 
                             <Select
                                 labelId="genre_label"
                                 id="genre"
                                 label="Genre"
-                                value={film.genreId.toString() || ''}
                                 required
+                                value={film.genreId||""}
                                 onChange={(e) => setFilm((prevFilm) => ({ ...prevFilm, genreId: parseInt(e.target.value as string) }))}
                             >
                                 {genre.map(({ genreId, name }) => (
@@ -419,9 +447,14 @@ const CreateFilm: React.FC<CreateFilmProps> = ({ isCreate, title, filmId }) => {
                         </FormControl>
                     </div>
 
-                    <Button style={{ height: '55px' }} type="submit" variant="contained">
-                        Submit
-                    </Button>
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                        <Button style={{ height: '55px' }} onClick={() => window.history.back()} variant="contained">
+                            Back
+                        </Button>
+                        <Button style={{ height: '55px' }} type="submit" variant="contained">
+                            Submit
+                        </Button>
+                    </div>
                 </form>
                 {errorFlag && <AlertBar></AlertBar>
                 }

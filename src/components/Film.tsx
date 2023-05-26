@@ -225,16 +225,39 @@ const EachFilm =() => {
             return true
         }
     }
+    const reviewFilmAlert = ()=> {
+        alert("Please log in or register")
+    }
 
 
         return <Container style={{display: 'inline-block', padding: "10px", verticalAlign: 'middle'}}>
                 <div style={{display: 'inline-block', padding: "10px"}}>
                     <FilmProfile key={oneFilm.filmId + oneFilm.title} film={oneFilm}/>
+                    <div style={{paddingTop:"20px"}}>
+                    {localStorage.getItem("token" ) === null  &&
+                        <Button
+                                variant="contained"
+                                onClick={reviewFilmAlert}>
+                            Review a film
+                        </Button>
+                    }
+                    </div>
                 </div>
-            <div style={{width:"500px", padding:"20px",display: 'inline-block'}}>
-                { (localStorage.getItem("token") !== "" && checkHasReviewOrNot() && localStorage.getItem("userId") !== oneFilm.directorId.toString()) &&
+
+                {/*{localStorage.getItem("token" ) === null  &&*/}
+                {/*    <Button style={{height: "55px", width: "85px", paddingLeft: "10px",paddingRight: "10px"}}*/}
+                {/*            variant="contained"*/}
+                {/*            onClick={reviewFilmAlert}>*/}
+                {/*        Review a film*/}
+                {/*    </Button>*/}
+                {/*}*/}
+
+
+            <div style={{width:"500px", padding:"20px",display: 'inline-block' }}>
+                { (localStorage.getItem("token") !== null && checkHasReviewOrNot() && localStorage.getItem("userId") !== oneFilm.directorId.toString()) &&
                     <CreateReview filmId={oneFilm.filmId}/>
                 }
+
             </div>
                 {oneFilm.directorId.toString() === localStorage.getItem("userId")  && <Container style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '50px' }}>
                     <div>

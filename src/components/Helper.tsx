@@ -203,7 +203,7 @@ export const CheckCreateReview = (status:number): [string, string] => {
         case 401:
             return ["error", "Unauthorized"]
         case 403:
-            return ["error", "Forbidden. Cannot review your own film, or cannot post a review on a film that has not yet releas"]
+            return ["error", "Forbidden. Cannot review your own film, or cannot post a review on a film that has not yet release"]
         case 404:
             return ["error", "Not Found. No film found with id"]
         case 500:
@@ -212,4 +212,27 @@ export const CheckCreateReview = (status:number): [string, string] => {
             return ["error", "Unknow Error"]
     }
 }
-export default {MyComponent,CheckGetUser,CheckCreateReview,handleToggle,removeDuplicateFilms,CheckLogInError,CheckChangeUserDetailError,CheckEditFilm,CheckRegisterError};
+
+export const CheckImageFile = (status:number): [string, string] => {
+
+    switch (status) {
+        case 200:
+            return ["success", "OK. Image updated"]
+        case 201:
+            return ["success", "Created. New image created"]
+            break;
+        case 400:
+            return ["error", "Bad Request. Invalid image supplied (possibly incorrect file type)"]
+        case 401:
+            return ["error", "Unauthorized"]
+        case 403:
+            return ["error", "Forbidden. Can not change another user's profile photo"]
+        case 404:
+            return ["error", "Not found. No such user with ID given"]
+        case 500:
+            return ["error", "Internal Server Error"]
+        default:
+            return ["error", "Unknow Error"]
+    }
+}
+export default {MyComponent,CheckImageFile,CheckGetUser,CheckCreateReview,handleToggle,removeDuplicateFilms,CheckLogInError,CheckChangeUserDetailError,CheckEditFilm,CheckRegisterError};

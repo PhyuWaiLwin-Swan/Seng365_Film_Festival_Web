@@ -71,6 +71,10 @@ const CreateReview = (props:filmProps)=>{
                         required
                         InputProps={{
                             readOnly: false,
+                            inputProps: {
+                                pattern: "^(10|[1-9])$",
+                                title: "Please enter a number from 1 to 10",
+                            },
                         }}
                         variant="standard"
                         onChange={(e)=>{setReviewRating(e.target.value? parseInt(e.target.value): 0)}}
@@ -83,7 +87,9 @@ const CreateReview = (props:filmProps)=>{
                         label="Review Comment"
                         defaultValue="" // Handle the case when description is null
                         InputProps={{
+
                             readOnly: false,
+
                         }}
                         variant="standard"
                         onChange={(e)=>{setReviewString(e.target.value)}}

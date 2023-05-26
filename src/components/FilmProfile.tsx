@@ -124,7 +124,7 @@ const FilmProfile = (props: IFilmProps ) => {
             />
             <TextField style={{padding:'8px'}}
                        id={film.filmId+"_directorLname"}
-                       label="Director First Name"
+                       label="Director Last Name"
                        defaultValue={film.directorLastName}
                        InputProps={{
                            readOnly: true,
